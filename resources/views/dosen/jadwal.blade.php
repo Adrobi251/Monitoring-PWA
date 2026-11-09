@@ -1,16 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-serif font-semibold text-2xl text-foreground leading-tight">
             {{ __('Manajemen Jadwal Konsultasi') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
+            <div class="bg-card overflow-hidden shadow-xl sm:rounded-2xl">
+                <div class="p-6 bg-card border-b border-border">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-semibold text-gray-800">Daftar Jadwal Konsultasi</h3>
+                        <h3 class="font-semibold text-foreground">Daftar Jadwal Konsultasi</h3>
                         <x-primary-button onclick="window.location='{{ route('dosen.jadwal.create') }}'">
                             {{ __('Tambah Jadwal') }}
                         </x-primary-button>
@@ -18,35 +18,35 @@
 
                     @if($jadwal->count() > 0)
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                        <table class="min-w-full divide-y divide-border">
+                            <thead class="bg-muted">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Waktu</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Lokasi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="bg-card divide-y divide-border">
                                 @foreach($jadwal as $item)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item->tanggal->format('d M Y') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item->jam_mulai }} - {{ $item->jam_selesai }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-900">{{ $item->lokasi ?? 'Tidak ditentukan' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">{{ $item->tanggal->format('d M Y') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">{{ $item->jam_mulai }} - {{ $item->jam_selesai }}</td>
+                                    <td class="px-6 py-4 text-sm text-foreground">{{ $item->lokasi ?? 'Tidak ditentukan' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            @if($item->status === 'active') bg-green-100 text-green-800
-                                            @else bg-red-100 text-red-800 @endif">
+                                            @if($item->status === 'active') bg-accent/10 text-accent
+                                            @else bg-destructive/10 text-destructive @endif">
                                             {{ ucfirst($item->status) }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('dosen.jadwal.edit', $item->id) }}" class="text-primary-600 hover:text-primary-900 mr-3">Edit</a>
+                                        <a href="{{ route('dosen.jadwal.edit', $item->id) }}" class="text-primary hover:text-primary/80 mr-3">Edit</a>
                                         <form method="POST" action="{{ route('dosen.jadwal.destroy', $item->id) }}" class="inline" onsubmit="return confirm('Hapus jadwal ini?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                            <button type="submit" class="text-destructive hover:text-destructive">Hapus</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -56,7 +56,7 @@
                     </div>
                     <div class="mt-4">{{ $jadwal->links() }}</div>
                     @else
-                    <div class="text-center py-8 text-gray-500">Belum ada jadwal konsultasi.</div>
+                    <div class="text-center py-8 text-muted-foreground">Belum ada jadwal konsultasi.</div>
                     @endif
                 </div>
             </div>

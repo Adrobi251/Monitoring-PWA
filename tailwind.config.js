@@ -11,8 +11,23 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                primary: '#2563EB',
+                secondary: '#3B82F6',
+                accent: '#059669',
+                background: '#F8FAFC',
+                foreground: '#0F172A',
+                card: '#FFFFFF',
+                'card-foreground': '#0F172A',
+                muted: '#F1F5FD',
+                'muted-foreground': '#475569',
+                border: '#E4ECFC',
+                destructive: '#DC2626',
+                ring: '#2563EB',
+            },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Atkinson Hyperlegible', ...defaultTheme.fontFamily.sans],
+                serif: ['Crimson Pro', ...defaultTheme.fontFamily.serif],
             },
         },
     },
