@@ -197,4 +197,41 @@ class ConsultationFlowTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Catatan Konsultasi');
     }
+
+    public function test_dosen_can_assign_mahasiswa_by_nim()
+    {
+        $dosen = User::factory()->create([
+            'role' => 'dosen',
+            'email' => 'dosen@test.com',
+            'password' => 'password',
+            'nidn' => 'D001',
+        ]);
+        $mahasiswa = User::factory()->create([
+            'role' => 'mahasiswa',
+            'email' => 'mahasiswa@test.com',
+            'password' => 'password',
+            'nim' => 'NIM001',
+        ]);
+
+        $response = $this->actingAs($dosen)
+            ->post(route('dosen.mahasiswa.assign'), ['nim' => 'NIM001']);
+
+        $response->assertSessionHas('success');
+        $this->assertEquals($dosen->id, $mahasiswa->refresh()->dosen_wali_id);
+    }
+
+    public function test_duplicate_nim_is_rejected_by_database()
+    {
+        User::factory()->create([
+            'role' => 'mahasiswa',
+            'nim' => 'NIM001',
+        ]);
+
+        $this->expectException(\Illuminate\Database\QueryException::class);
+
+        User::factory()->create([
+            'role' => 'mahasiswa',
+            'nim' => 'NIM001',
+        ]);
+    }
 }

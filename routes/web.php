@@ -31,7 +31,7 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['auth', 'verified', 
 
 Route::prefix('dosen')->name('dosen.')->middleware(['auth', 'verified', 'role:dosen'])->group(function () {
     Route::get('/dashboard', [DosenDashboardController::class, 'index'])->name('dashboard');
-    Route::post('/mahasiswa/assign', [DosenDashboardController::class, 'assignMahasiswa'])->name('mahasiswa.assign');
+    Route::post('/mahasiswa/assign', [DosenDashboardController::class, 'assignMahasiswa'])->middleware('throttle:5,1')->name('mahasiswa.assign');
     Route::get('/dashboard/jadwal', [DosenDashboardController::class, 'jadwal'])->name('jadwal');
     Route::get('/dashboard/riwayat', [DosenDashboardController::class, 'riwayat'])->name('riwayat');
     Route::get('/jadwal/create', [JadwalKonsultasiController::class, 'create'])->name('jadwal.create');
