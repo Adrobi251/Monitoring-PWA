@@ -24,6 +24,10 @@ class DosenDashboardController extends Controller
             return back()->withErrors(['nim' => 'Mahasiswa dengan NIM tersebut tidak ditemukan.']);
         }
 
+        if ($mahasiswa->dosen_wali_id !== null) {
+            return back()->withErrors(['nim' => 'Mahasiswa ini sudah memiliki dosen wali.']);
+        }
+
         $mahasiswa->update(['dosen_wali_id' => Auth::id()]);
 
         return back()->with('success', 'Mahasiswa berhasil ditugaskan ke Anda.');

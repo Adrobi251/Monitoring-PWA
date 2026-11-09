@@ -38,20 +38,27 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Network-first strategy for HTML pages
+    // Network-first for HTML pages, but do NOT cache sensitive pages (dashboard, auth, profile, etc.)
     if (request.mode === 'navigate' || (request.headers.get('accept') && request.headers.get('accept').includes('text/html'))) {
+        const url = new URL(request.url);
+        const sensitive = url.pathname !== '/' && url.pathname !== '/offline.html';
         event.respondWith(
             fetch(request)
                 .then(response => {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then(cache => {
-                        cache.put(request, responseClone);
-                    });
+                    if (!sensitive) {
+                        const responseClone = response.clone();
+                        caches.open(CACHE_NAME).then(cache => {
+                            cache.put(request, responseClone);
+                        });
+                    }
                     return response;
                 })
                 .catch(() => {
                     return caches.match(request).then(cachedResponse => {
-                        return cachedResponse || caches.match('/offline.html');
+                        if (cachedResponse && !sensitive) {
+                            return cachedResponse;
+                        }
+                        return caches.match('/offline.html');
                     });
                 })
         );

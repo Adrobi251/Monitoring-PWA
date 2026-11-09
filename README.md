@@ -56,6 +56,7 @@
   - Schedule: `/dosen/dashboard/jadwal`
   - History: `/dosen/dashboard/riwayat`
   - Approve Consultation: `/pengajuan/{pengajuan}/status` (PUT)
+  - Assign Mahasiswa: `/dosen/mahasiswa/assign` (POST, by NIM)
 
 ## PWA Installation
 
