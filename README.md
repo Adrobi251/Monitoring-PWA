@@ -1,83 +1,62 @@
-# Konsultasi Layanan Mahasiswa-Dosen (Laravel 13 PWA)
+# Sistem Informasi Layanan Konsultasi Akademik
 
-## Setup
+Aplikasi web berbasis **Laravel 13** dengan dukungan **Progressive Web App (PWA)** untuk
+mengelola jadwal konsultasi, pengajuan, persetujuan/penolakan, dan catatan hasil
+konsultasi antara mahasiswa dan dosen wali.
 
-1. **Install dependencies**:
-   ```powershell
-   composer install
-   ```
+## Fitur utama
 
-2. **Generate application key**:
-   ```powershell
-   php artisan key:generate
-   ```
+- Autentikasi berbasis peran (mahasiswa/dosen), CSRF, rate limit login, validasi input.
+- Jadwal konsultasi: CRUD, deteksi bentrok (slot berdampingan diizinkan), penonaktifan.
+- Pengajuan konsultasi: hanya ke dosen wali, jadwal aktif, slot belum lewat; anti double
+  booking (transaksi + `lockForUpdate`).
+- Persetujuan/penolakan: alasan wajib saat menolak; slot tidak bisa disetujui dua kali;
+  guard jadwal aktif & belum lewat.
+- Catatan konsultasi: hanya dosen terkait, sekali per pengajuan (unique index), menyelesaikan
+  pengajuan.
+- Notifikasi database + pemberitahuan perubahan jadwal.
+- Dashboard, filter, pencarian, riwayat.
+- PWA: manifest, ikon, service worker v3, offline fallback, installable.
+- Responsif (1440/1280/768/390/360), dark mode.
 
-3. **Run migrations**:
-   ```powershell
-   php artisan migrate
-   ```
+## Tumpukan teknologi
 
-4. **Install Node.js dependencies and build assets**:
-   ```powershell
-   npm install
-   npm run build
-   ```
+Laravel 13, PHP 8.3, MySQL, Tailwind CSS, Vite, PHPUnit.
 
-5. **Start development server**:
-   ```powershell
-   php artisan serve
-   ```
+## Mulai cepat
 
-## Roles & Demo Accounts
-
-- **Dosen (Lecturer)**:
-  - Email: `dosen@test.com`
-  - Password: `password`
-  - NIDN: `D001`
-  - ID: 3
-
-- **Mahasiswa (Student)**:
-  - Email: `mahasiswa@test.com`
-  - Password: `password`
-  - NIM: `123456789`
-  - ID: 4
-  - Dosen Wali ID: 3 (assigned to dosen@test.com)
-
-## Routes
-
-- **Mahasiswa Routes** (`/mahasiswa/*`):
-  - Dashboard: `/mahasiswa/dashboard`
-  - Schedule: `/mahasiswa/dashboard/jadwal`
-  - History: `/mahasiswa/dashboard/riwayat`
-  - Submit Consultation: `/mahasiswa/pengajuan` (POST)
-
-- **Dosen Routes** (`/dosen/*`):
-  - Dashboard: `/dosen/dashboard`
-  - Schedule: `/dosen/dashboard/jadwal`
-  - History: `/dosen/dashboard/riwayat`
-  - Approve Consultation: `/pengajuan/{pengajuan}/status` (PUT)
-  - Assign Mahasiswa: `/dosen/mahasiswa/assign` (POST, by NIM)
-
-## PWA Installation
-
-1. Open the application in your browser
-2. Click the install button in the browser toolbar (Chrome/Edge)
-3. The app will be added to your home screen and work offline
-
-## Features
-
-- Role-based authentication (mahasiswa/dosen)
-- Schedule management with overlap validation
-- Consultation submission and approval workflow
-- Transaction protection with `lockForUpdate` for double booking prevention
-- PWA support with manifest and service worker
-- Offline fallback
-- Database notifications
-- Comprehensive testing with PHPUnit
-
-## Testing
-
-Run the consultation flow tests:
 ```powershell
-php artisan test --filter ConsultationFlowTest
+composer install
+Copy-Item .env.example .env
+php artisan key:generate
+# atur DB_* di .env
+php artisan migrate --seed
+npm install
+npm run build
+php artisan serve
 ```
+
+Buka `http://127.0.0.1:8000` (atau `http://localhost:8000`).
+
+## Dokumentasi
+
+- [Panduan Instalasi](docs/INSTALLATION.md)
+- [Panduan Pengguna](docs/USER_GUIDE.md)
+- [Laporan Pengujian](docs/TESTING_REPORT.md)
+- [Pengujian PWA](docs/PWA_TESTING.md)
+
+## Akun demo
+
+Lihat [Panduan Pengguna](docs/USER_GUIDE.md#akun-demo).
+
+## Pengujian
+
+```powershell
+php artisan test
+```
+
+Hasil rilis ini: **94 test, 381 assertion, 0 gagal**.
+
+## Lisensi
+
+Proyek akademik (UAS). Tidak ada lisensi open-source yang dinyatakan.

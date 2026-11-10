@@ -61,7 +61,7 @@ class ConsultationFlowTest extends TestCase
         $jadwal = JadwalKonsultasi::factory()->create([
             'dosen_id' => $dosen->id,
             'status' => 'active',
-            'tanggal' => now()->toDateString(),
+            'tanggal' => now()->addDay()->toDateString(),
             'jam_mulai' => '10:00',
             'jam_selesai' => '11:00',
         ]);
@@ -98,7 +98,7 @@ class ConsultationFlowTest extends TestCase
         $jadwal1 = JadwalKonsultasi::factory()->create([
             'dosen_id' => $dosen->id,
             'status' => 'active',
-            'tanggal' => now()->toDateString(),
+            'tanggal' => now()->addDay()->toDateString(),
             'jam_mulai' => '10:00',
             'jam_selesai' => '11:00',
         ]);

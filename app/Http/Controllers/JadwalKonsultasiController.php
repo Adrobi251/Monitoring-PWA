@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\JadwalKonsultasi;
+use App\Notifications\JadwalDiperbaruiNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class JadwalKonsultasiController extends Controller
 {
@@ -34,25 +37,26 @@ class JadwalKonsultasiController extends Controller
 
         $validated['dosen_id'] = Auth::id();
 
-        // Cek bentrok jadwal
-        $bentrok = JadwalKonsultasi::where('dosen_id', Auth::id())
-            ->where('tanggal', $validated['tanggal'])
-            ->where(function ($query) use ($validated) {
-                $query->whereBetween('jam_mulai', [$validated['jam_mulai'], $validated['jam_selesai']])
-                      ->orWhereBetween('jam_selesai', [$validated['jam_mulai'], $validated['jam_selesai']])
-                      ->orWhere(function ($q) use ($validated) {
-                          $q->where('jam_mulai', '<=', $validated['jam_mulai'])
-                            ->where('jam_selesai', '>=', $validated['jam_selesai']);
-                      });
-            })
-            ->where('status', 'active')
-            ->exists();
-
-        if ($bentrok) {
-            return back()->withErrors(['tanggal' => 'Jadwal bentrok dengan jadwal yang sudah ada.'])->withInput();
+        if ($this->waktuSudahLewat($validated['tanggal'], $validated['jam_mulai'])) {
+            return back()->withErrors(['tanggal' => 'Jadwal tidak boleh dimulai pada waktu yang sudah lewat.'])->withInput();
         }
 
-        JadwalKonsultasi::create($validated);
+        try {
+            DB::transaction(function () use ($validated) {
+                JadwalKonsultasi::where('dosen_id', Auth::id())
+                    ->where('tanggal', $validated['tanggal'])
+                    ->lockForUpdate()
+                    ->get();
+
+                if ($this->jadwalBentrok($validated)) {
+                    throw new \RuntimeException('Jadwal bentrok dengan jadwal yang sudah ada.');
+                }
+
+                JadwalKonsultasi::create($validated);
+            });
+        } catch (\RuntimeException $e) {
+            return back()->withErrors(['tanggal' => $e->getMessage()])->withInput();
+        }
 
         return redirect()->route('dosen.jadwal')->with('success', 'Jadwal konsultasi berhasil ditambahkan.');
     }
@@ -85,25 +89,21 @@ class JadwalKonsultasiController extends Controller
         ]);
 
         // Cek bentrok (exclude current jadwal)
-        $bentrok = JadwalKonsultasi::where('dosen_id', Auth::id())
-            ->where('id', '!=', $jadwal->id)
-            ->where('tanggal', $validated['tanggal'])
-            ->where(function ($query) use ($validated) {
-                $query->whereBetween('jam_mulai', [$validated['jam_mulai'], $validated['jam_selesai']])
-                      ->orWhereBetween('jam_selesai', [$validated['jam_mulai'], $validated['jam_selesai']])
-                      ->orWhere(function ($q) use ($validated) {
-                          $q->where('jam_mulai', '<=', $validated['jam_mulai'])
-                            ->where('jam_selesai', '>=', $validated['jam_selesai']);
-                      });
-            })
-            ->where('status', 'active')
-            ->exists();
+        if ($this->waktuSudahLewat($validated['tanggal'], $validated['jam_mulai'])) {
+            return back()->withErrors(['tanggal' => 'Jadwal tidak boleh dimulai pada waktu yang sudah lewat.'])->withInput();
+        }
 
-        if ($bentrok) {
+        if ($this->jadwalBentrok($validated, $jadwal->id)) {
             return back()->withErrors(['tanggal' => 'Jadwal bentrok dengan jadwal yang sudah ada.'])->withInput();
         }
 
         $jadwal->update($validated);
+
+        $jadwal->pengajuan()
+            ->where('status', 'approved')
+            ->with('mahasiswa')
+            ->get()
+            ->each(fn ($pengajuan) => $pengajuan->mahasiswa?->notify(new JadwalDiperbaruiNotification($pengajuan)));
 
         return redirect()->route('dosen.jadwal')->with('success', 'Jadwal konsultasi berhasil diperbarui.');
     }
@@ -114,15 +114,30 @@ class JadwalKonsultasiController extends Controller
             abort(403);
         }
 
-        // Cek apakah jadwal sudah dipakai pengajuan approved
-        $sudahDipakai = $jadwal->pengajuan()->where('status', 'approved')->exists();
-        
-        if ($sudahDipakai) {
-            return back()->withErrors(['jadwal' => 'Jadwal tidak dapat dihapus karena sudah digunakan untuk konsultasi.']);
+        // Jadwal yang sudah memiliki riwayat pengajuan tidak boleh dihapus
+        // (PRD §8.11): utamakan penonaktifan melalui menu Edit.
+        if ($jadwal->pengajuan()->exists()) {
+            return back()->withErrors(['jadwal' => 'Jadwal tidak dapat dihapus karena sudah memiliki riwayat pengajuan. Nonaktifkan jadwal ini melalui menu Edit.']);
         }
 
         $jadwal->delete();
 
         return redirect()->route('dosen.jadwal')->with('success', 'Jadwal konsultasi berhasil dihapus.');
+    }
+
+    private function jadwalBentrok(array $validated, ?int $kecualiId = null): bool
+    {
+        return JadwalKonsultasi::where('dosen_id', Auth::id())
+            ->where('tanggal', $validated['tanggal'])
+            ->when($kecualiId, fn ($query) => $query->where('id', '!=', $kecualiId))
+            ->where('status', 'active')
+            ->where('jam_mulai', '<', $validated['jam_selesai'])
+            ->where('jam_selesai', '>', $validated['jam_mulai'])
+            ->exists();
+    }
+
+    private function waktuSudahLewat(string $tanggal, string $jamMulai): bool
+    {
+        return Carbon::parse($tanggal.' '.$jamMulai)->isPast();
     }
 }

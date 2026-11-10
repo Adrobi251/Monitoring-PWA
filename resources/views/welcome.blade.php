@@ -1,74 +1,145 @@
-<x-guest-layout>
-    <div class="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-        <header class="border-b border-border/60 bg-card/70 backdrop-blur">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <x-application-logo class="h-9 w-9 text-primary" />
-                    <span class="font-serif font-semibold text-xl text-foreground">Konsultasi Layanan</span>
-                </div>
-                <nav class="flex items-center gap-2">
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition">
-                            Masuk
-                        </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition">
-                            Daftar
-                        </a>
-                    @endauth
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="manifest" href="/manifest.webmanifest">
+        <link rel="icon" href="/favicon.ico" sizes="any">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <meta name="apple-mobile-web-app-title" content="Konsultasi">
+        <meta name="theme-color" content="#176B52">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="description" content="Sistem Informasi Layanan Konsultasi Akademik Mahasiswa berbasis PWA.">
+
+        <title>{{ config('app.name', 'Konsultasi Akademik') }}</title>
+
+        <script>
+            (function () {
+                const stored = localStorage.getItem('theme');
+                const dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.classList.toggle('dark', dark);
+            })();
+        </script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    </head>
+    <body class="min-h-screen bg-background font-sans text-foreground antialiased">
+        <header class="sticky top-0 z-30 border-b border-border bg-surface/90 backdrop-blur">
+            <div class="page-container flex h-16 items-center justify-between gap-4">
+                <a href="{{ url('/') }}" class="flex items-center gap-2.5">
+                    <x-brand-mark class="h-9 w-9 text-primary" />
+                    <span class="text-sm font-semibold text-foreground">Konsultasi Akademik</span>
+                </a>
+
+                <nav class="hidden items-center gap-6 text-sm text-muted-foreground sm:flex" aria-label="Navigasi halaman">
+                    <a href="#fitur" class="transition-colors hover:text-foreground">Fitur</a>
+                    <a href="#alur" class="transition-colors hover:text-foreground">Alur</a>
+                    <a href="#tentang" class="transition-colors hover:text-foreground">Tentang</a>
                 </nav>
+
+                <div class="flex items-center gap-1.5">
+                    <x-theme-toggle />
+                    @auth
+                        <x-button :href="route('dashboard')" size="sm">Dashboard</x-button>
+                    @else
+                        <x-button :href="route('login')" variant="ghost" size="sm">Masuk</x-button>
+                        <x-button :href="route('register')" size="sm">Daftar</x-button>
+                    @endauth
+                </div>
             </div>
         </header>
 
         <main>
-            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-                <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <section class="border-b border-border">
+                <div class="page-container grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-2">
                     <div>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wide">
-                            Konsultasi Akademik
+                        <span class="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                            <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                            Progressive Web App
                         </span>
-                        <h1 class="mt-5 font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight text-foreground">
-                            Konsultasi dengan Dosen Wali, lebih mudah.
+
+                        <h1 class="mt-5 text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                            Konsultasi akademik dengan dosen wali, lebih teratur dan terpantau.
                         </h1>
-                        <p class="mt-6 text-lg text-muted-foreground leading-relaxed">
-                            Ajukan jadwal, pantau status, dan simpan catatan konsultasi akademik dalam satu platform yang aman untuk mahasiswa dan dosen.
+
+                        <p class="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+                            Ajukan jadwal konsultasi, pantau status persetujuan, dan simpan catatan hasil bimbingan akademik dalam satu sistem yang mudah digunakan.
                         </p>
-                        <div class="mt-8 flex flex-col sm:flex-row gap-3">
-                            <a href="{{ route('register') }}" class="inline-flex justify-center items-center px-6 py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition shadow-lg shadow-primary/20">
-                                Mulai Sebagai Mahasiswa
-                            </a>
-                            <a href="{{ route('login') }}" class="inline-flex justify-center items-center px-6 py-3 rounded-xl bg-card border border-border text-foreground font-medium hover:bg-muted transition">
-                                Masuk Akun
-                            </a>
+
+                        <div class="mt-7 flex flex-col gap-2 sm:flex-row">
+                            @auth
+                                <x-button :href="route('dashboard')" size="lg">
+                                    Buka Dashboard
+                                    <x-icon name="arrow-right" class="h-4 w-4" />
+                                </x-button>
+                            @else
+                                <x-button :href="route('login')" size="lg">
+                                    Masuk ke Sistem
+                                    <x-icon name="arrow-right" class="h-4 w-4" />
+                                </x-button>
+                                <x-button :href="route('register')" variant="secondary" size="lg">Daftar Mahasiswa</x-button>
+                            @endauth
                         </div>
+
+                        <dl class="mt-10 grid grid-cols-3 gap-4 border-t border-border pt-6">
+                            <div>
+                                <dt class="text-xs text-muted-foreground">Peran pengguna</dt>
+                                <dd class="mt-1 text-lg font-semibold text-foreground">Mahasiswa &amp; Dosen</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs text-muted-foreground">Status konsultasi</dt>
+                                <dd class="mt-1 text-lg font-semibold text-foreground">Real-time</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs text-muted-foreground">Akses</dt>
+                                <dd class="mt-1 text-lg font-semibold text-foreground">PWA</dd>
+                            </div>
+                        </dl>
                     </div>
 
                     <div class="relative">
-                        <div class="absolute -inset-4 bg-gradient-to-tr from-primary/20 via-secondary/10 to-accent/20 rounded-3xl blur-2xl"></div>
-                        <div class="relative bg-card border border-border rounded-3xl shadow-2xl p-6">
-                            <div class="flex items-center justify-between mb-5">
-                                <div>
-                                    <p class="text-sm text-muted-foreground">Jadwal berikutnya</p>
-                                    <h2 class="font-serif text-xl font-semibold text-foreground">Konsultasi Akademik</h2>
-                                </div>
-                                <span class="px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-medium">Disetujui</span>
+                        <div class="rounded-2xl border border-border bg-surface p-4 shadow-card sm:p-5">
+                            <div class="flex items-center justify-between border-b border-border pb-3">
+                                <p class="text-sm font-semibold text-foreground">Ringkasan Konsultasi</p>
+                                <span class="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">Akademik</span>
                             </div>
-                            <div class="space-y-4">
-                                <div class="flex items-center gap-4 p-4 rounded-2xl bg-muted border border-border">
-                                    <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-semibold">R</div>
-                                    <div>
-                                        <p class="font-medium text-foreground">Review KRS &amp; IPK</p>
-                                        <p class="text-sm text-muted-foreground">Senin, 09.00 - 10.30 · Ruang 204</p>
+
+                            <div class="mt-4 grid grid-cols-2 gap-3">
+                                <div class="rounded-lg bg-muted p-3">
+                                    <p class="text-xs text-muted-foreground">Pengajuan</p>
+                                    <p class="mt-1 text-xl font-semibold text-foreground">Terpantau</p>
+                                </div>
+                                <div class="rounded-lg bg-muted p-3">
+                                    <p class="text-xs text-muted-foreground">Jadwal</p>
+                                    <p class="mt-1 text-xl font-semibold text-foreground">Terjadwal</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 space-y-2">
+                                <div class="flex items-center gap-3 rounded-lg border border-border px-3 py-3">
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary"><x-icon name="calendar" class="h-4 w-4" /></span>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-xs font-medium text-foreground">Jadwal konsultasi</p>
+                                        <p class="text-[11px] text-muted-foreground">Dosen wali membuka slot waktu</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border">
-                                    <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center font-semibold">S</div>
-                                    <div>
-                                        <p class="font-medium text-foreground">Skripsi Chapter 2</p>
-                                        <p class="text-sm text-muted-foreground">Rabu, 13.00 - 14.30 · Online</p>
+                                <div class="flex items-center gap-3 rounded-lg border border-border px-3 py-3">
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-warning/10 text-warning"><x-icon name="clock" class="h-4 w-4" /></span>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-xs font-medium text-foreground">Menunggu persetujuan</p>
+                                        <p class="text-[11px] text-muted-foreground">Pengajuan ditinjau dosen wali</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 rounded-lg border border-border px-3 py-3">
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10 text-success"><x-icon name="check-circle" class="h-4 w-4" /></span>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-xs font-medium text-foreground">Catatan konsultasi</p>
+                                        <p class="text-[11px] text-muted-foreground">Hasil bimbingan tersimpan</p>
                                     </div>
                                 </div>
                             </div>
@@ -77,55 +148,90 @@
                 </div>
             </section>
 
-            <section class="bg-card border-y border-border">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="p-6 rounded-2xl bg-muted border border-border">
-                            <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            </div>
-                            <h3 class="font-serif text-lg font-semibold text-foreground">Jadwal Terstruktur</h3>
-                            <p class="mt-2 text-sm text-muted-foreground">Buat dan kelola slot konsultasi akademik tanpa bentrok.</p>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-muted border border-border">
-                            <div class="w-11 h-11 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-4">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            </div>
-                            <h3 class="font-serif text-lg font-semibold text-foreground">Status Jelas</h3>
-                            <p class="mt-2 text-sm text-muted-foreground">Pantau pengajuan dari menunggu, disetujui, ditolak, hingga selesai.</p>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-muted border border-border">
-                            <div class="w-11 h-11 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center mb-4">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                            </div>
-                            <h3 class="font-serif text-lg font-semibold text-foreground">Catatan Tersimpan</h3>
-                            <p class="mt-2 text-sm text-muted-foreground">Simpan ringkasan, arahan, dan tindak lanjut setiap konsultasi.</p>
-                        </div>
+            <section id="fitur" class="border-b border-border py-16">
+                <div class="page-container">
+                    <div class="max-w-2xl">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Fitur Utama</p>
+                        <h2 class="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Dirancang untuk alur konsultasi akademik.</h2>
+                        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Setiap fitur mengikuti kebutuhan mahasiswa dan dosen wali, dari pengajuan hingga catatan hasil konsultasi.</p>
+                    </div>
+
+                    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        <x-card>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><x-icon name="calendar" class="h-5 w-5" /></span>
+                            <h3 class="mt-4 text-sm font-semibold text-foreground">Jadwal Terpadu</h3>
+                            <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Dosen wali mengelola slot konsultasi, mahasiswa memilih jadwal yang tersedia.</p>
+                        </x-card>
+                        <x-card>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-warning/10 text-warning"><x-icon name="clock" class="h-5 w-5" /></span>
+                            <h3 class="mt-4 text-sm font-semibold text-foreground">Monitoring Status</h3>
+                            <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Pantau status pengajuan: menunggu, disetujui, ditolak, hingga selesai.</p>
+                        </x-card>
+                        <x-card>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-success/10 text-success"><x-icon name="chat" class="h-5 w-5" /></span>
+                            <h3 class="mt-4 text-sm font-semibold text-foreground">Catatan &amp; Riwayat</h3>
+                            <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Hasil konsultasi terdokumentasi dan dapat diakses kembali kapan saja.</p>
+                        </x-card>
                     </div>
                 </div>
             </section>
 
-            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div class="rounded-3xl bg-primary text-white p-8 sm:p-12 text-center shadow-xl">
-                    <h2 class="font-serif text-3xl sm:text-4xl font-semibold">Siap memulai konsultasi?</h2>
-                    <p class="mt-3 text-white/80">Daftar sebagai mahasiswa atau masuk untuk melihat dashboard Anda.</p>
-                    <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
-                        <a href="{{ route('register') }}" class="inline-flex justify-center items-center px-6 py-3 rounded-xl bg-white text-primary font-medium hover:bg-background transition">
-                            Daftar Sekarang
-                        </a>
-                        <a href="{{ route('login') }}" class="inline-flex justify-center items-center px-6 py-3 rounded-xl border border-white/40 text-white font-medium hover:bg-white/10 transition">
-                            Masuk
-                        </a>
+            <section id="alur" class="border-b border-border py-16">
+                <div class="page-container">
+                    <div class="max-w-2xl">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Alur Penggunaan</p>
+                        <h2 class="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Tiga langkah sederhana.</h2>
+                    </div>
+
+                    <ol class="mt-8 grid gap-4 sm:grid-cols-3">
+                        <li class="rounded-xl border border-border bg-surface p-5 shadow-card">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">1</span>
+                            <h3 class="mt-4 text-sm font-semibold text-foreground">Pilih jadwal</h3>
+                            <p class="mt-1 text-sm text-muted-foreground">Lihat slot konsultasi yang dibuka dosen wali.</p>
+                        </li>
+                        <li class="rounded-xl border border-border bg-surface p-5 shadow-card">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">2</span>
+                            <h3 class="mt-4 text-sm font-semibold text-foreground">Kirim pengajuan</h3>
+                            <p class="mt-1 text-sm text-muted-foreground">Isi topik dan deskripsi konsultasi yang dibutuhkan.</p>
+                        </li>
+                        <li class="rounded-xl border border-border bg-surface p-5 shadow-card">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">3</span>
+                            <h3 class="mt-4 text-sm font-semibold text-foreground">Pantau hasil</h3>
+                            <p class="mt-1 text-sm text-muted-foreground">Ikuti status dan baca catatan hasil konsultasi.</p>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="tentang" class="py-16">
+                <div class="page-container">
+                    <div class="rounded-2xl bg-primary px-6 py-10 text-white sm:px-10">
+                        <div class="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
+                            <div class="max-w-xl">
+                                <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Mulai konsultasi akademik Anda.</h2>
+                                <p class="mt-2 text-sm leading-relaxed text-white/80">Masuk menggunakan akun yang telah terdaftar untuk mengakses jadwal dan pengajuan konsultasi.</p>
+                            </div>
+                            <div class="flex flex-col gap-2 sm:flex-row">
+                                @auth
+                                    <x-button :href="route('dashboard')" variant="secondary" size="lg">Buka Dashboard</x-button>
+                                @else
+                                    <x-button :href="route('login')" variant="secondary" size="lg">Masuk</x-button>
+                                    <x-button :href="route('register')" variant="secondary" size="lg">Daftar</x-button>
+                                @endauth
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
         </main>
 
-        <footer class="border-t border-border bg-card/60">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-sm text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-2">
-                <span>{{ config('app.name', 'Laravel') }}</span>
-                <span>Sistem Konsultasi Akademik Mahasiswa &amp; Dosen Wali</span>
+        <footer class="border-t border-border py-6">
+            <div class="page-container flex flex-col items-center justify-between gap-2 text-xs text-muted-foreground sm:flex-row">
+                <p>&copy; {{ date('Y') }} Sistem Informasi Layanan Konsultasi Akademik</p>
+                <p>Universitas Cokroaminoto Palopo</p>
             </div>
         </footer>
-    </div>
-</x-guest-layout>
+
+        <x-offline-banner />
+    </body>
+</html>

@@ -1,3 +1,67 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --primary: 23 107 82;
+        --primary-dark: 16 76 61;
+        --secondary: 232 244 237;
+        --background: 247 249 248;
+        --surface: 255 255 255;
+        --foreground: 23 53 43;
+        --muted: 241 245 243;
+        --muted-foreground: 113 128 120;
+        --border: 227 235 230;
+        --success: 25 135 84;
+        --warning: 217 155 34;
+        --danger: 220 53 69;
+        --ring: 23 107 82;
+    }
+
+    .dark {
+        --primary: 46 154 120;
+        --primary-dark: 36 125 97;
+        --secondary: 28 48 40;
+        --background: 15 26 22;
+        --surface: 22 36 31;
+        --foreground: 232 241 236;
+        --muted: 30 48 41;
+        --muted-foreground: 154 175 165;
+        --border: 36 53 45;
+        --success: 52 168 112;
+        --warning: 230 178 74;
+        --danger: 235 94 106;
+        --ring: 46 154 120;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+    }
+
+    * {
+        @apply border-border;
+    }
+
+    ::selection {
+        @apply bg-primary/20 text-foreground;
+    }
+}
+
+@layer components {
+    .focus-ring {
+        @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+    }
+
+    .page-container {
+        @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+}
+
+[x-cloak] {
+    display: none !important;
+}

@@ -1,67 +1,51 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-serif font-semibold text-2xl text-foreground leading-tight">
-            {{ __('Tambah Jadwal Konsultasi') }}
-        </h2>
-    </x-slot>
+    <x-page-header
+        title="Tambah Jadwal Konsultasi"
+        subtitle="Buka slot waktu baru untuk konsultasi mahasiswa bimbingan."
+    >
+        <x-slot:breadcrumb>
+            <x-breadcrumb :items="[['label' => 'Kelola Jadwal', 'url' => route('dosen.jadwal')], ['label' => 'Tambah Jadwal']]" />
+        </x-slot:breadcrumb>
+    </x-page-header>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-card overflow-hidden shadow-xl sm:rounded-2xl">
-                <div class="p-6 bg-card border-b border-border">
-                    <form method="POST" action="{{ route('dosen.jadwal.store') }}">
-                        @csrf
+    <div class="max-w-2xl">
+        <x-card>
+            <form method="POST" action="{{ route('dosen.jadwal.store') }}" class="space-y-5">
+                @csrf
 
-                        <div class="mb-4">
-                            <label for="tanggal" class="block text-sm font-medium text-foreground">Tanggal</label>
-                            <input type="date" name="tanggal" id="tanggal" class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring-primary">
-                            @error('tanggal')
-                                <p class="mt-1 text-sm text-destructive">{{ $message }}</p>
-                            @enderror
-                        </div>
+                <x-form-field label="Tanggal" name="tanggal">
+                    <x-text-input type="date" name="tanggal" :value="old('tanggal')" min="{{ now()->toDateString() }}" required />
+                </x-form-field>
 
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="jam_mulai" class="block text-sm font-medium text-foreground">Jam Mulai</label>
-                                <input type="time" name="jam_mulai" id="jam_mulai" class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring-primary">
-                                @error('jam_mulai')
-                                    <p class="mt-1 text-sm text-destructive">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="jam_selesai" class="block text-sm font-medium text-foreground">Jam Selesai</label>
-                                <input type="time" name="jam_selesai" id="jam_selesai" class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring-primary">
-                                @error('jam_selesai')
-                                    <p class="mt-1 text-sm text-destructive">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <x-form-field label="Jam Mulai" name="jam_mulai">
+                        <x-text-input type="time" name="jam_mulai" :value="old('jam_mulai')" required />
+                    </x-form-field>
 
-                        <div class="mb-4">
-                            <label for="lokasi" class="block text-sm font-medium text-foreground">Lokasi</label>
-                            <input type="text" name="lokasi" id="lokasi" class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring-primary">
-                            @error('lokasi')
-                                <p class="mt-1 text-sm text-destructive">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="status" class="block text-sm font-medium text-foreground">Status</label>
-                            <select name="status" id="status" class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring-primary">
-                                <option value="active">Aktif</option>
-                                <option value="inactive">Tidak Aktif</option>
-                            </select>
-                            @error('status')
-                                <p class="mt-1 text-sm text-destructive">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button>{{ __('Tambah Jadwal') }}</x-primary-button>
-                        </div>
-                    </form>
+                    <x-form-field label="Jam Selesai" name="jam_selesai">
+                        <x-text-input type="time" name="jam_selesai" :value="old('jam_selesai')" required />
+                    </x-form-field>
                 </div>
-            </div>
-        </div>
+
+                <x-form-field label="Lokasi" name="lokasi" hint="Opsional. Contoh: Ruang Dosen Lt. 2 atau Google Meet.">
+                    <x-text-input type="text" name="lokasi" :value="old('lokasi')" placeholder="Lokasi konsultasi" maxlength="255" />
+                </x-form-field>
+
+                <x-form-field label="Status" name="status">
+                    <x-select name="status" required>
+                        <option value="active" @selected(old('status', 'active') === 'active')>Aktif</option>
+                        <option value="inactive" @selected(old('status') === 'inactive')>Tidak Aktif</option>
+                    </x-select>
+                </x-form-field>
+
+                <div class="flex flex-col-reverse gap-2 border-t border-border pt-5 sm:flex-row sm:justify-end">
+                    <x-button :href="route('dosen.jadwal')" variant="secondary">Batal</x-button>
+                    <x-button type="submit">
+                        <x-icon name="check" class="h-4 w-4" />
+                        Simpan Jadwal
+                    </x-button>
+                </div>
+            </form>
+        </x-card>
     </div>
 </x-app-layout>

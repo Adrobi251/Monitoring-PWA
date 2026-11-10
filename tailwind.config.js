@@ -3,6 +3,8 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class',
+
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -12,22 +14,35 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#2563EB',
-                secondary: '#3B82F6',
-                accent: '#059669',
-                background: '#F8FAFC',
-                foreground: '#0F172A',
-                card: '#FFFFFF',
-                'card-foreground': '#0F172A',
-                muted: '#F1F5FD',
-                'muted-foreground': '#475569',
-                border: '#E4ECFC',
-                destructive: '#DC2626',
-                ring: '#2563EB',
+                primary: 'rgb(var(--primary) / <alpha-value>)',
+                'primary-dark': 'rgb(var(--primary-dark) / <alpha-value>)',
+                secondary: 'rgb(var(--secondary) / <alpha-value>)',
+                background: 'rgb(var(--background) / <alpha-value>)',
+                surface: 'rgb(var(--surface) / <alpha-value>)',
+                foreground: 'rgb(var(--foreground) / <alpha-value>)',
+                muted: 'rgb(var(--muted) / <alpha-value>)',
+                'muted-foreground': 'rgb(var(--muted-foreground) / <alpha-value>)',
+                border: 'rgb(var(--border) / <alpha-value>)',
+                success: 'rgb(var(--success) / <alpha-value>)',
+                warning: 'rgb(var(--warning) / <alpha-value>)',
+                danger: 'rgb(var(--danger) / <alpha-value>)',
+                destructive: 'rgb(var(--danger) / <alpha-value>)',
+                ring: 'rgb(var(--ring) / <alpha-value>)',
             },
             fontFamily: {
-                sans: ['Atkinson Hyperlegible', ...defaultTheme.fontFamily.sans],
-                serif: ['Crimson Pro', ...defaultTheme.fontFamily.serif],
+                sans: ['"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
+            },
+            borderRadius: {
+                sm: '6px',
+                DEFAULT: '8px',
+                md: '10px',
+                lg: '12px',
+                xl: '14px',
+                '2xl': '16px',
+            },
+            boxShadow: {
+                card: '0 1px 2px rgba(23, 53, 43, 0.06), 0 1px 3px rgba(23, 53, 43, 0.08)',
+                pop: '0 10px 30px -12px rgba(23, 53, 43, 0.25)',
             },
         },
     },

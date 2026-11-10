@@ -1,101 +1,201 @@
+@php
+    $hour = now()->hour;
+    $greeting = $hour < 11 ? 'Selamat pagi' : ($hour < 15 ? 'Selamat siang' : ($hour < 19 ? 'Selamat sore' : 'Selamat malam'));
+    $firstName = explode(' ', trim($user->name))[0];
+    $terbaru = $riwayatTerbaru->first();
+@endphp
+
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-serif font-semibold text-2xl text-foreground leading-tight">
-            {{ __('Dashboard Mahasiswa') }}
-        </h2>
-    </x-slot>
+    <x-page-header
+        :title="$greeting.', '.$firstName"
+        subtitle="Berikut ringkasan aktivitas konsultasi akademik Anda hari ini."
+    >
+        <x-slot:actions>
+            <x-button :href="route('mahasiswa.pengajuan.create')">
+                <x-icon name="plus" class="h-4 w-4" />
+                Ajukan Konsultasi
+            </x-button>
+        </x-slot:actions>
+    </x-page-header>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-card overflow-hidden shadow-lg sm:rounded-xl border border-border">
-                <div class="p-6 bg-card border-b border-border">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <div class="bg-primary/5 p-4 rounded-xl border border-primary/10">
-                            <h3 class="text-sm font-medium text-primary">Total Pengajuan</h3>
-                            <p class="text-2xl font-bold text-primary">{{ $stats['total_pengajuan'] }}</p>
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <x-stat-card label="Total Pengajuan" :value="$stats['total_pengajuan']" tone="primary">
+            <x-slot:icon><x-icon name="document" class="h-5 w-5" /></x-slot:icon>
+        </x-stat-card>
+        <x-stat-card label="Menunggu" :value="$stats['pending']" tone="warning">
+            <x-slot:icon><x-icon name="clock" class="h-5 w-5" /></x-slot:icon>
+        </x-stat-card>
+        <x-stat-card label="Disetujui" :value="$stats['approved']" tone="success">
+            <x-slot:icon><x-icon name="check-circle" class="h-5 w-5" /></x-slot:icon>
+        </x-stat-card>
+        <x-stat-card label="Selesai" :value="$stats['completed']" tone="neutral">
+            <x-slot:icon><x-icon name="academic-cap" class="h-5 w-5" /></x-slot:icon>
+        </x-stat-card>
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="space-y-6 lg:col-span-2">
+            <x-card :padding="false">
+                <x-slot:header>
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <h2 class="text-sm font-semibold text-foreground">Jadwal Konsultasi Terdekat</h2>
+                            <p class="mt-0.5 text-xs text-muted-foreground">Jadwal yang sudah disetujui dosen wali</p>
                         </div>
-                        <div class="bg-accent/5 p-4 rounded-xl border border-accent/10">
-                            <h3 class="text-sm font-medium text-accent">Menunggu</h3>
-                            <p class="text-2xl font-bold text-accent">{{ $stats['pending'] }}</p>
-                        </div>
-                        <div class="bg-secondary/5 p-4 rounded-xl border border-secondary/10">
-                            <h3 class="text-sm font-medium text-secondary">Disetujui</h3>
-                            <p class="text-2xl font-bold text-secondary">{{ $stats['approved'] }}</p>
-                        </div>
-                        <div class="bg-muted p-4 rounded-xl border border-border">
-                            <h3 class="text-sm font-medium text-muted-foreground">Selesai</h3>
-                            <p class="text-2xl font-bold text-foreground">{{ $stats['completed'] }}</p>
+                        <x-icon name="calendar" class="h-5 w-5 text-muted-foreground" />
+                    </div>
+                </x-slot:header>
+
+                @if ($jadwalTerdekat && $jadwalTerdekat->jadwal)
+                    <div class="p-5 sm:p-6">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                    <span class="text-xl font-semibold leading-none">{{ $jadwalTerdekat->jadwal->tanggal->format('d') }}</span>
+                                    <span class="mt-1 text-[10px] font-semibold uppercase tracking-wide">{{ $jadwalTerdekat->jadwal->tanggal->translatedFormat('M') }}</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-foreground">{{ $jadwalTerdekat->jadwal->tanggal->translatedFormat('l, d F Y') }}</p>
+                                    <p class="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+                                        <x-icon name="clock" class="h-4 w-4" />
+                                        {{ $jadwalTerdekat->jadwal->jam_mulai }}–{{ $jadwalTerdekat->jadwal->jam_selesai }}
+                                    </p>
+                                    <p class="mt-1 text-sm text-muted-foreground">
+                                        {{ $jadwalTerdekat->jadwal->lokasi ?? 'Lokasi belum ditentukan' }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <x-button :href="route('mahasiswa.pengajuan.show', $jadwalTerdekat)" variant="secondary" size="sm" class="shrink-0">
+                                Detail
+                                <x-icon name="arrow-right" class="h-4 w-4" />
+                            </x-button>
                         </div>
                     </div>
+                @else
+                    <x-empty-state
+                        icon="calendar"
+                        title="Belum ada jadwal terdekat"
+                        description="Ajukan konsultasi pada jadwal dosen wali yang tersedia."
+                    >
+                        <x-slot:action>
+                            <x-button :href="route('mahasiswa.jadwal')" size="sm">Lihat Jadwal</x-button>
+                        </x-slot:action>
+                    </x-empty-state>
+                @endif
+            </x-card>
 
-                    @if($dosenWali)
-                    <div class="mb-6 p-4 bg-muted rounded-xl border border-border">
-                        <h3 class="font-serif font-semibold text-foreground mb-2">Dosen Wali Anda</h3>
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                                <span class="text-xl font-semibold text-primary">{{ strtoupper($dosenWali->name[0]) }}</span>
-                            </div>
-                            <div class="ml-4">
-                                <p class="font-medium text-foreground">{{ $dosenWali->name }}</p>
-                                <p class="text-sm text-muted-foreground">NIDN: {{ $dosenWali->nidn ?? '-' }}</p>
-                            </div>
-                        </div>
+            <x-card :padding="false">
+                <x-slot:header>
+                    <div class="flex items-center justify-between gap-3">
+                        <h2 class="text-sm font-semibold text-foreground">Aktivitas Terbaru</h2>
+                        <a href="{{ route('mahasiswa.riwayat') }}" class="text-xs font-medium text-primary hover:text-primary-dark">Lihat semua</a>
                     </div>
-                    @endif
+                </x-slot:header>
 
-                    @if($jadwalTerdekat)
-                    <div class="mb-6 p-4 bg-accent/5 rounded-xl border border-accent/10">
-                        <h3 class="font-serif font-semibold text-foreground mb-2">Jadwal Konsultasi Terdekat</h3>
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                            <div>
-                                <p class="font-medium text-foreground">{{ $jadwalTerdekat->jadwal->tanggal->format('d M Y') }}</p>
-                                <p class="text-sm text-muted-foreground">{{ $jadwalTerdekat->jadwal->jam_mulai }} - {{ $jadwalTerdekat->jadwal->jam_selesai }} | {{ $jadwalTerdekat->jadwal->lokasi ?? 'Tidak ditentukan' }}</p>
-                            </div>
-                            <span class="px-3 py-1 bg-accent/10 text-accent text-sm font-medium rounded-full">{{ $jadwalTerdekat->status }}</span>
-                        </div>
-                    </div>
-                    @endif
-
-                    <h3 class="font-serif font-semibold text-foreground mb-4">Riwayat Konsultasi Terbaru</h3>
-                    @if($riwayatTerbaru->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-border">
-                            <thead class="bg-muted">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Topik</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-card divide-y divide-border">
-                                @foreach($riwayatTerbaru as $item)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">{{ $item->jadwal->tanggal->format('d M Y') ?? '-' }}</td>
-                                    <td class="px-6 py-4 text-sm text-foreground">{{ $item->topik }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            @if($item->status === 'pending') bg-amber-100 text-amber-800
-                                            @elseif($item->status === 'approved') bg-accent/10 text-accent
-                                            @elseif($item->status === 'rejected') bg-destructive/10 text-destructive
-                                            @elseif($item->status === 'completed') bg-secondary/10 text-secondary
-                                            @else bg-muted text-muted-foreground @endif">
-                                            {{ ucfirst($item->status) }}
+                @if ($riwayatTerbaru->isEmpty())
+                    <x-empty-state
+                        icon="clipboard"
+                        title="Belum ada aktivitas"
+                        description="Pengajuan konsultasi Anda akan muncul di sini."
+                    />
+                @else
+                    <ul class="divide-y divide-border">
+                        @foreach ($riwayatTerbaru as $item)
+                            <li>
+                                <a href="{{ route('mahasiswa.pengajuan.show', $item) }}" class="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-muted sm:px-6">
+                                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                                        <x-icon name="document" class="h-4 w-4" />
+                                    </span>
+                                    <span class="min-w-0 flex-1">
+                                        <span class="block truncate text-sm font-medium text-foreground">{{ $item->topik }}</span>
+                                        <span class="mt-0.5 block text-xs text-muted-foreground">
+                                            {{ $item->jadwal?->tanggal?->translatedFormat('d M Y') ?? $item->created_at->translatedFormat('d M Y') }}
                                         </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('mahasiswa.riwayat') }}" class="text-primary hover:text-primary/80">Lihat</a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    @else
-                    <div class="text-center py-8 text-muted-foreground">Belum ada riwayat konsultasi.</div>
-                    @endif
+                                    </span>
+                                    <x-status-badge :status="$item->status" />
+                                    <x-icon name="chevron-right" class="h-4 w-4 shrink-0 text-muted-foreground" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </x-card>
+        </div>
+
+        <div class="space-y-6">
+            <x-card>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold text-foreground">Dosen Wali</h2>
+                    <x-icon name="academic-cap" class="h-5 w-5 text-muted-foreground" />
                 </div>
-            </div>
+
+                @if ($dosenWali)
+                    <div class="mt-4 flex items-center gap-3">
+                        <x-avatar :name="$dosenWali->name" size="lg" />
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-semibold text-foreground">{{ $dosenWali->name }}</p>
+                            <p class="text-xs text-muted-foreground">NIDN {{ $dosenWali->nidn ?? '-' }}</p>
+                        </div>
+                    </div>
+
+                    <dl class="mt-4 space-y-2 text-sm">
+                        <div class="flex items-center justify-between gap-3">
+                            <dt class="text-muted-foreground">Email</dt>
+                            <dd class="truncate font-medium text-foreground">{{ $dosenWali->email }}</dd>
+                        </div>
+                    </dl>
+
+                    <x-button :href="route('mahasiswa.dosen-wali')" variant="secondary" size="sm" class="mt-4 w-full">
+                        Informasi Dosen Wali
+                    </x-button>
+                @else
+                    <p class="mt-4 text-sm text-muted-foreground">Anda belum memiliki dosen wali. Hubungi administrator akademik.</p>
+                @endif
+            </x-card>
+
+            <x-card>
+                <h2 class="text-sm font-semibold text-foreground">Status Pengajuan Terbaru</h2>
+
+                @if ($terbaru)
+                    <div class="mt-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <p class="min-w-0 text-sm font-medium text-foreground">{{ $terbaru->topik }}</p>
+                            <x-status-badge :status="$terbaru->status" class="shrink-0" />
+                        </div>
+                        <p class="mt-1 text-xs text-muted-foreground">Diajukan {{ $terbaru->created_at->diffForHumans() }}</p>
+
+                        @if ($terbaru->status === 'rejected' && $terbaru->alasan_penolakan)
+                            <p class="mt-3 rounded-lg bg-danger/10 px-3 py-2 text-xs text-danger">{{ $terbaru->alasan_penolakan }}</p>
+                        @endif
+
+                        <x-button :href="route('mahasiswa.pengajuan.show', $terbaru)" variant="ghost" size="sm" class="mt-3 w-full justify-between">
+                            Lihat detail
+                            <x-icon name="arrow-right" class="h-4 w-4" />
+                        </x-button>
+                    </div>
+                @else
+                    <p class="mt-4 text-sm text-muted-foreground">Belum ada pengajuan konsultasi.</p>
+                @endif
+            </x-card>
+
+            <x-card>
+                <h2 class="text-sm font-semibold text-foreground">Aksi Cepat</h2>
+                <div class="mt-4 space-y-2">
+                    <x-button :href="route('mahasiswa.pengajuan.create')" class="w-full justify-start">
+                        <x-icon name="plus" class="h-4 w-4" />
+                        Ajukan Konsultasi
+                    </x-button>
+                    <x-button :href="route('mahasiswa.jadwal')" variant="secondary" class="w-full justify-start">
+                        <x-icon name="calendar" class="h-4 w-4" />
+                        Lihat Jadwal
+                    </x-button>
+                    <x-button :href="route('mahasiswa.riwayat')" variant="ghost" class="w-full justify-start">
+                        <x-icon name="clipboard" class="h-4 w-4" />
+                        Riwayat Konsultasi
+                    </x-button>
+                </div>
+            </x-card>
         </div>
     </div>
 </x-app-layout>

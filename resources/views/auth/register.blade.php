@@ -1,59 +1,37 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <div class="mb-6">
+        <h1 class="text-2xl font-semibold tracking-tight text-foreground">Daftar akun mahasiswa</h1>
+        <p class="mt-1 text-sm text-muted-foreground">Lengkapi data berikut untuk membuat akun konsultasi akademik.</p>
+    </div>
+
+    <form method="POST" action="{{ route('register') }}" class="space-y-4">
         @csrf
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
+        <x-form-field label="Nama Lengkap" name="name">
+            <x-text-input id="name" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="Nama lengkap" />
+        </x-form-field>
 
-        <!-- NIM -->
-        <div class="mt-4">
-            <x-input-label for="nim" :value="__('NIM')" />
-            <x-text-input id="nim" class="block mt-1 w-full" type="text" name="nim" :value="old('nim')" placeholder="NIM" autocomplete="username" />
-            <x-input-error :messages="$errors->get('nim')" class="mt-2" />
-        </div>
+        <x-form-field label="NIM" name="nim" hint="Nomor Induk Mahasiswa.">
+            <x-text-input id="nim" type="text" name="nim" :value="old('nim')" placeholder="Masukkan NIM" autocomplete="username" />
+        </x-form-field>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <x-form-field label="Email" name="email">
+            <x-text-input id="email" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="nama@email.com" />
+        </x-form-field>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <x-form-field label="Kata Sandi" name="password">
+            <x-text-input id="password" type="password" name="password" required autocomplete="new-password" placeholder="Minimal 8 karakter" />
+        </x-form-field>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+        <x-form-field label="Konfirmasi Kata Sandi" name="password_confirmation">
+            <x-text-input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Ulangi kata sandi" />
+        </x-form-field>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-muted-foreground hover:text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
+        <x-primary-button class="w-full">Daftar</x-primary-button>
     </form>
+
+    <p class="mt-6 text-center text-sm text-muted-foreground">
+        Sudah punya akun?
+        <a href="{{ route('login') }}" class="font-medium text-primary hover:text-primary-dark">Masuk</a>
+    </p>
 </x-guest-layout>

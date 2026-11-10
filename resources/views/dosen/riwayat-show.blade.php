@@ -1,80 +1,242 @@
+@php
+    $catatan = $pengajuan->catatan;
+    $jadwal = $pengajuan->jadwal;
+@endphp
+
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-serif font-semibold text-2xl text-foreground leading-tight">
-            {{ __('Detail Permohonan Konsultasi') }}
-        </h2>
-    </x-slot>
+    <x-page-header
+        title="Detail Pengajuan"
+        :subtitle="$pengajuan->topik"
+    >
+        <x-slot:breadcrumb>
+            <x-breadcrumb :items="[['label' => 'Pengajuan Konsultasi', 'url' => route('dosen.riwayat')], ['label' => 'Detail Pengajuan']]" />
+        </x-slot:breadcrumb>
+        <x-slot:actions>
+            <x-status-badge :status="$pengajuan->status" />
+        </x-slot:actions>
+    </x-page-header>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-card overflow-hidden shadow-xl sm:rounded-2xl">
-                <div class="p-6 bg-card border-b border-border">
-                    <div class="mb-6">
-                        <h3 class="font-semibold text-foreground mb-2">Mahasiswa</h3>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <span class="text-muted-foreground">Nama:</span>
-                                <span class="font-medium">{{ $pengajuan->mahasiswa->name }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">NIM:</span>
-                                <span class="font-medium">{{ $pengajuan->mahasiswa->nim }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">Topik:</span>
-                                <span class="font-medium">{{ $pengajuan->topik }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">Jadwal:</span>
-                                <span class="font-medium">{{ $pengajuan->jadwal->tanggal->format('d M Y') }} - {{ $pengajuan->jadwal->jam_mulai }} - {{ $pengajuan->jadwal->jam_selesai }}</span>
-                            </div>
-                        </div>
-                    </div>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="space-y-6 lg:col-span-2">
+            <x-card>
+                <h2 class="text-sm font-semibold text-foreground">Informasi Pengajuan</h2>
 
-                    @if($catatan)
-                    <div class="mt-6">
-                        <h3 class="font-semibold text-foreground mb-2">Catatan Konsultasi</h3>
-                        <div class="bg-muted rounded-xl p-4">
-                            <p class="text-sm text-foreground whitespace-pre-line"><strong>Ringkasan:</strong> {{ $catatan->ringkasan }}</p>
-                            @if($catatan->arahan)
-                                <p class="text-sm text-foreground mt-2 whitespace-pre-line"><strong>Arahan:</strong> {{ $catatan->arahan }}</p>
-                            @endif
-                            @if($catatan->tindak_lanjut)
-                                <p class="text-sm text-foreground mt-2 whitespace-pre-line"><strong>Tindak Lanjut:</strong> {{ $catatan->tindak_lanjut }}</p>
-                            @endif
-                        </div>
+                <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Mahasiswa</dt>
+                        <dd class="mt-1 text-sm font-medium text-foreground">{{ $pengajuan->mahasiswa->name ?? '-' }}</dd>
+                        <dd class="text-xs text-muted-foreground">NIM {{ $pengajuan->mahasiswa->nim ?? '-' }}</dd>
                     </div>
+                    <div>
+                        <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Tanggal Diajukan</dt>
+                        <dd class="mt-1 text-sm text-foreground">{{ $pengajuan->created_at->translatedFormat('l, d F Y · H:i') }}</dd>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Deskripsi</dt>
+                        <dd class="mt-1 whitespace-pre-line text-sm leading-relaxed text-foreground">{{ $pengajuan->deskripsi }}</dd>
+                    </div>
+                </dl>
+
+                @if ($pengajuan->status === 'rejected' && $pengajuan->alasan_penolakan)
+                    <div class="mt-5 rounded-lg border border-danger/25 bg-danger/10 px-4 py-3">
+                        <p class="text-sm font-medium text-danger">Alasan Penolakan</p>
+                        <p class="mt-1 text-sm text-danger">{{ $pengajuan->alasan_penolakan }}</p>
+                    </div>
+                @endif
+            </x-card>
+
+            <x-card>
+                <h2 class="text-sm font-semibold text-foreground">Riwayat Status</h2>
+
+                <x-timeline class="mt-4">
+                    <x-timeline-item title="Pengajuan dikirim" :time="$pengajuan->created_at->translatedFormat('d M Y · H:i')" tone="primary">
+                        Diajukan oleh {{ $pengajuan->mahasiswa->name ?? 'mahasiswa' }}.
+                    </x-timeline-item>
+
+                    @if ($pengajuan->status === 'approved' || $pengajuan->status === 'completed')
+                        <x-timeline-item title="Pengajuan disetujui" tone="success">
+                            Pengajuan disetujui dan siap dilaksanakan sesuai jadwal.
+                        </x-timeline-item>
+                    @elseif ($pengajuan->status === 'rejected')
+                        <x-timeline-item title="Pengajuan ditolak" tone="danger">
+                            {{ $pengajuan->alasan_penolakan ?? 'Pengajuan tidak dapat diproses.' }}
+                        </x-timeline-item>
                     @else
-                    <div class="mt-6 text-muted-foreground">
-                        <p>Belum ada catatan konsultasi untuk permohonan ini.</p>
-                        <a href="{{ route('pengajuan.catatan.create', $pengajuan) }}" class="text-primary hover:text-primary/80 mt-2 block">Tambah Catatan</a>
-                    </div>
+                        <x-timeline-item title="Menunggu persetujuan" tone="warning">
+                            Pengajuan menunggu keputusan dosen wali.
+                        </x-timeline-item>
                     @endif
 
-                    <div class="mt-6 flex items-center justify-between">
-                        <span class="text-sm text-muted-foreground">Status: <strong class="font-medium @switch($pengajuan->status)
-                            @case('approved') text-accent
-                            @case('rejected') text-destructive
-                            @default text-amber-600 @endif">{{ ucfirst($pengajuan->status) }}</span>
+                    @if ($pengajuan->status === 'completed')
+                        <x-timeline-item title="Konsultasi selesai" tone="success">
+                            Catatan hasil konsultasi sudah diisi.
+                        </x-timeline-item>
+                    @endif
+                </x-timeline>
+            </x-card>
 
-                        @if(auth()->user()->role === 'dosen')
-                            <div class="flex items-center space-x-2">
-                                <a href="{{ route('dosen.riwayat') }}" class="text-sm text-primary hover:text-primary/80">Kembali ke Riwayat</a>
-                                @if($pengajuan->status === 'approved')
-                                    <form method="POST" action="{{ route('pengajuan.status', $pengajuan) }}" style="display:inline">
-                                        @csrf
-                                        <select name="status" onchange="this.form.submit()">
-                                            <option value="approved">Disetujui</option>
-                                            <option value="rejected" selected>Ditolak</option>
-                                        </select>
-                                        <input type="text" name="alasan_penolakan" placeholder="Alasan penolakan" class="ml-2 text-sm border-border rounded-lg p-1 shadow-sm" />
-                                    </form>
-                                @endif
+            @if ($catatan)
+                <x-card>
+                    <div class="flex items-center justify-between gap-3">
+                        <h2 class="text-sm font-semibold text-foreground">Catatan Konsultasi</h2>
+                        <x-icon name="chat" class="h-5 w-5 text-muted-foreground" />
+                    </div>
+
+                    <dl class="mt-4 space-y-4">
+                        <div>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Ringkasan</dt>
+                            <dd class="mt-1 whitespace-pre-line text-sm leading-relaxed text-foreground">{{ $catatan->ringkasan }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Arahan</dt>
+                            <dd class="mt-1 whitespace-pre-line text-sm leading-relaxed text-foreground">{{ $catatan->arahan }}</dd>
+                        </div>
+                        @if ($catatan->tindak_lanjut)
+                            <div>
+                                <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Tindak Lanjut</dt>
+                                <dd class="mt-1 whitespace-pre-line text-sm leading-relaxed text-foreground">{{ $catatan->tindak_lanjut }}</dd>
                             </div>
                         @endif
+                    </dl>
+
+                    <div class="mt-5 flex flex-wrap gap-2">
+                        <x-button :href="route('dosen.pengajuan.catatan.edit', [$pengajuan, $catatan])" variant="secondary" size="sm">
+                            <x-icon name="pencil" class="h-4 w-4" />
+                            Edit Catatan
+                        </x-button>
+                        <x-button :href="route('mahasiswa.pengajuan.catatan.show', $pengajuan)" variant="ghost" size="sm">Lihat Halaman Catatan</x-button>
                     </div>
+                </x-card>
+            @endif
+        </div>
+
+        <div class="space-y-6">
+            <x-card>
+                <h2 class="text-sm font-semibold text-foreground">Jadwal Konsultasi</h2>
+
+                @if ($jadwal)
+                    <div class="mt-4 flex items-start gap-3">
+                        <div class="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <span class="text-base font-semibold leading-none">{{ $jadwal->tanggal->format('d') }}</span>
+                            <span class="mt-0.5 text-[10px] font-medium uppercase">{{ $jadwal->tanggal->translatedFormat('M') }}</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium text-foreground">{{ $jadwal->tanggal->translatedFormat('l, d F Y') }}</p>
+                            <p class="mt-0.5 text-sm text-muted-foreground">{{ $jadwal->jam_mulai }}–{{ $jadwal->jam_selesai }}</p>
+                            <p class="mt-0.5 text-xs text-muted-foreground">{{ $jadwal->lokasi ?? 'Lokasi belum ditentukan' }}</p>
+                        </div>
+                    </div>
+                @else
+                    <p class="mt-3 text-sm text-muted-foreground">Jadwal tidak tersedia.</p>
+                @endif
+            </x-card>
+
+            <x-card>
+                <h2 class="text-sm font-semibold text-foreground">Tindakan</h2>
+
+                <div class="mt-4 space-y-2">
+                    @if ($pengajuan->status === 'pending')
+                        <x-button type="button" variant="success" class="w-full justify-start" x-data x-on:click="$dispatch('open-modal', 'setujui-pengajuan')">
+                            <x-icon name="check-circle" class="h-4 w-4" />
+                            Setujui Pengajuan
+                        </x-button>
+                        <x-button type="button" variant="ghost" class="w-full justify-start text-danger hover:bg-danger/10" x-data x-on:click="$dispatch('open-modal', 'tolak-pengajuan')">
+                            <x-icon name="x-circle" class="h-4 w-4" />
+                            Tolak Pengajuan
+                        </x-button>
+                    @endif
+
+                    @if ($pengajuan->status === 'approved' && ! $catatan)
+                        <x-button :href="route('dosen.pengajuan.catatan.create', $pengajuan)" class="w-full justify-start">
+                            <x-icon name="plus" class="h-4 w-4" />
+                            Tambah Catatan Konsultasi
+                        </x-button>
+                        <p class="text-xs text-muted-foreground">Status akan otomatis menjadi selesai setelah catatan disimpan.</p>
+                    @endif
+
+                    @if ($catatan)
+                        <x-button :href="route('dosen.pengajuan.catatan.edit', [$pengajuan, $catatan])" variant="secondary" class="w-full justify-start">
+                            <x-icon name="pencil" class="h-4 w-4" />
+                            Edit Catatan
+                        </x-button>
+                    @endif
+
+                    <x-button :href="route('dosen.riwayat')" variant="ghost" class="w-full justify-start">
+                        <x-icon name="arrow-left" class="h-4 w-4" />
+                        Kembali ke Daftar
+                    </x-button>
                 </div>
-            </div>
+            </x-card>
+
+            @if ($pengajuan->mahasiswa)
+                <x-card>
+                    <h2 class="text-sm font-semibold text-foreground">Mahasiswa</h2>
+                    <div class="mt-4 flex items-center gap-3">
+                        <x-avatar :name="$pengajuan->mahasiswa->name" size="lg" />
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-semibold text-foreground">{{ $pengajuan->mahasiswa->name }}</p>
+                            <p class="text-xs text-muted-foreground">NIM {{ $pengajuan->mahasiswa->nim ?? '-' }}</p>
+                        </div>
+                    </div>
+                    <x-button :href="route('dosen.mahasiswa.show', $pengajuan->mahasiswa)" variant="secondary" size="sm" class="mt-4 w-full">Lihat Profil Mahasiswa</x-button>
+                </x-card>
+            @endif
         </div>
     </div>
+
+    @if ($pengajuan->status === 'pending')
+        <x-modal name="setujui-pengajuan" maxWidth="md" focusable>
+            <form method="POST" action="{{ route('dosen.pengajuan.status', $pengajuan) }}" class="p-6">
+                @csrf
+                @method('PUT')
+
+                <div class="flex items-start gap-4">
+                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-success/10 text-success">
+                        <x-icon name="check-circle" class="h-5 w-5" />
+                    </div>
+                    <div class="min-w-0">
+                        <h2 class="text-lg font-semibold text-foreground">Setujui pengajuan?</h2>
+                        <p class="mt-1 text-sm text-muted-foreground">Pengajuan ini akan disetujui dan mahasiswa dapat melaksanakan konsultasi sesuai jadwal.</p>
+                    </div>
+                </div>
+
+                <input type="hidden" name="status" value="approved">
+
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-button type="button" variant="secondary" x-on:click="$dispatch('close')">Batal</x-button>
+                    <x-button variant="success">Setujui</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        <x-modal name="tolak-pengajuan" maxWidth="md" focusable>
+            <form method="POST" action="{{ route('dosen.pengajuan.status', $pengajuan) }}" class="p-6">
+                @csrf
+                @method('PUT')
+
+                <div class="flex items-start gap-4">
+                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-danger/10 text-danger">
+                        <x-icon name="x-circle" class="h-5 w-5" />
+                    </div>
+                    <div class="min-w-0">
+                        <h2 class="text-lg font-semibold text-foreground">Tolak pengajuan?</h2>
+                        <p class="mt-1 text-sm text-muted-foreground">Berikan alasan agar mahasiswa memahami keputusan Anda.</p>
+                    </div>
+                </div>
+
+                <input type="hidden" name="status" value="rejected">
+
+                <div class="mt-4">
+                    <x-form-field label="Alasan Penolakan" name="alasan_penolakan">
+                        <x-textarea name="alasan_penolakan" rows="3" placeholder="Tuliskan alasan penolakan" required></x-textarea>
+                    </x-form-field>
+                </div>
+
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-button type="button" variant="secondary" x-on:click="$dispatch('close')">Batal</x-button>
+                    <x-button variant="danger">Tolak Pengajuan</x-button>
+                </div>
+            </form>
+        </x-modal>
+    @endif
 </x-app-layout>

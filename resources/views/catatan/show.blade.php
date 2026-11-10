@@ -1,61 +1,86 @@
+@php
+    $isDosen = auth()->user()->role === 'dosen';
+    $pengajuan = $catatan->pengajuan;
+@endphp
+
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-serif font-semibold text-2xl text-foreground leading-tight">
-            {{ __('Catatan Konsultasi') }}
-        </h2>
-    </x-slot>
+    <x-page-header
+        title="Catatan Konsultasi"
+        :subtitle="$pengajuan->topik"
+    >
+        <x-slot:breadcrumb>
+            <x-breadcrumb :items="[['label' => 'Catatan Konsultasi']]" />
+        </x-slot:breadcrumb>
+        <x-slot:actions>
+            @if ($isDosen)
+                <x-button :href="route('dosen.pengajuan.catatan.edit', [$pengajuan, $catatan])" variant="secondary">
+                    <x-icon name="pencil" class="h-4 w-4" />
+                    Edit Catatan
+                </x-button>
+            @endif
+        </x-slot:actions>
+    </x-page-header>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-card overflow-hidden shadow-xl sm:rounded-2xl">
-                <div class="p-6 bg-card border-b border-border">
-                    <div class="mb-6">
-                        <h3 class="font-semibold text-foreground mb-2">Detail Pengajuan</h3>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <span class="text-muted-foreground">Mahasiswa:</span>
-                                <span class="font-medium">{{ $catatan->pengajuan->mahasiswa->name }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">NIM:</span>
-                                <span class="font-medium">{{ $catatan->pengajuan->mahasiswa->nim }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">Topik:</span>
-                                <span class="font-medium">{{ $catatan->pengajuan->topik }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">Tanggal:</span>
-                                <span class="font-medium">{{ $catatan->pengajuan->jadwal->tanggal->format('d M Y') }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div>
-                            <h4 class="text-sm font-medium text-foreground">Ringkasan</h4>
-                            <p class="mt-1 text-sm text-foreground whitespace-pre-line">{{ $catatan->ringkasan }}</p>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-medium text-foreground">Arahan</h4>
-                            <p class="mt-1 text-sm text-foreground whitespace-pre-line">{{ $catatan->arahan }}</p>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-medium text-foreground">Tindak Lanjut</h4>
-                            <p class="mt-1 text-sm text-foreground whitespace-pre-line">{{ $catatan->tindak_lanjut ?? '-' }}</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-end mt-6">
-                        @if(auth()->user()->role === 'dosen')
-                            <a href="{{ route('pengajuan.catatan.edit', [$catatan->pengajuan, $catatan]) }}" class="text-sm text-primary hover:text-primary/80 mr-4">Edit Catatan</a>
-                        @endif
-                        <a href="{{ auth()->user()->role === 'dosen' ? route('dosen.riwayat.show', $catatan->pengajuan) : route('mahasiswa.riwayat') }}" class="text-sm text-muted-foreground hover:text-foreground">Kembali</a>
-                    </div>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+            <x-card>
+                <div class="flex items-center justify-between gap-3">
+                    <h2 class="text-sm font-semibold text-foreground">Hasil Konsultasi</h2>
+                    <x-icon name="chat" class="h-5 w-5 text-muted-foreground" />
                 </div>
-            </div>
+
+                <dl class="mt-4 space-y-5">
+                    <div>
+                        <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Ringkasan</dt>
+                        <dd class="mt-1 whitespace-pre-line text-sm leading-relaxed text-foreground">{{ $catatan->ringkasan }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Arahan</dt>
+                        <dd class="mt-1 whitespace-pre-line text-sm leading-relaxed text-foreground">{{ $catatan->arahan }}</dd>
+                    </div>
+                    @if ($catatan->tindak_lanjut)
+                        <div>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Tindak Lanjut</dt>
+                            <dd class="mt-1 whitespace-pre-line text-sm leading-relaxed text-foreground">{{ $catatan->tindak_lanjut }}</dd>
+                        </div>
+                    @endif
+                </dl>
+            </x-card>
+        </div>
+
+        <div class="space-y-6">
+            <x-card>
+                <h2 class="text-sm font-semibold text-foreground">Informasi Konsultasi</h2>
+                <dl class="mt-4 space-y-3 text-sm">
+                    <div>
+                        <dt class="text-xs text-muted-foreground">Mahasiswa</dt>
+                        <dd class="font-medium text-foreground">{{ $pengajuan->mahasiswa->name ?? '-' }}</dd>
+                        <dd class="text-xs text-muted-foreground">NIM {{ $pengajuan->mahasiswa->nim ?? '-' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs text-muted-foreground">Dosen Wali</dt>
+                        <dd class="font-medium text-foreground">{{ $pengajuan->dosen->name ?? '-' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs text-muted-foreground">Jadwal</dt>
+                        <dd class="font-medium text-foreground">
+                            {{ $pengajuan->jadwal?->tanggal?->translatedFormat('d M Y') ?? '-' }}
+                            @if ($pengajuan->jadwal)
+                                &middot; {{ $pengajuan->jadwal->jam_mulai }}–{{ $pengajuan->jadwal->jam_selesai }}
+                            @endif
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs text-muted-foreground">Status</dt>
+                        <dd class="mt-1"><x-status-badge :status="$pengajuan->status" /></dd>
+                    </div>
+                </dl>
+
+                <x-button :href="$isDosen ? route('dosen.riwayat.show', $pengajuan) : route('mahasiswa.pengajuan.show', $pengajuan)" variant="secondary" size="sm" class="mt-5 w-full">
+                    <x-icon name="arrow-left" class="h-4 w-4" />
+                    Kembali ke Detail Pengajuan
+                </x-button>
+            </x-card>
         </div>
     </div>
 </x-app-layout>

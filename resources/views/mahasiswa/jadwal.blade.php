@@ -1,65 +1,75 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-serif font-semibold text-2xl text-foreground leading-tight">
-            {{ __('Jadwal Konsultasi') }}
-        </h2>
-    </x-slot>
+    <x-page-header
+        title="Jadwal Konsultasi"
+        subtitle="Pilih jadwal dosen wali yang tersedia, lalu ajukan konsultasi."
+    >
+        <x-slot:breadcrumb>
+            <x-breadcrumb :items="[['label' => 'Jadwal Konsultasi']]" />
+        </x-slot:breadcrumb>
+    </x-page-header>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-card overflow-hidden shadow-xl sm:rounded-2xl">
-                <div class="p-6 bg-card border-b border-border">
-                    <h3 class="font-semibold text-foreground mb-4">Jadwal Konsultasi Dosen Wali</h3>
+    @if (auth()->user()->dosen_wali_id === null)
+        <x-card>
+            <x-empty-state
+                icon="academic-cap"
+                title="Dosen wali belum ditetapkan"
+                description="Jadwal konsultasi akan muncul setelah dosen wali Anda ditetapkan oleh administrator."
+            />
+        </x-card>
+    @elseif ($jadwal->isEmpty())
+        <x-card>
+            <x-empty-state
+                icon="calendar"
+                title="Belum ada jadwal tersedia"
+                description="Dosen wali Anda belum membuka jadwal konsultasi. Silakan periksa kembali nanti."
+            />
+        </x-card>
+    @else
+        <div class="space-y-3">
+            @foreach ($jadwal as $item)
+                <div class="rounded-xl border border-border bg-surface p-4 shadow-card sm:p-5">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="flex items-start gap-4">
+                            <div class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                <span class="text-lg font-semibold leading-none">{{ $item->tanggal->format('d') }}</span>
+                                <span class="mt-0.5 text-[10px] font-medium uppercase tracking-wide">{{ $item->tanggal->translatedFormat('M') }}</span>
+                            </div>
 
-                    @if($jadwal->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-border">
-                            <thead class="bg-muted">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Waktu</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Lokasi</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-card divide-y divide-border">
-                                @foreach($jadwal as $item)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">{{ $item->tanggal->format('d M Y') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">{{ $item->jam_mulai }} - {{ $item->jam_selesai }}</td>
-                                    <td class="px-6 py-4 text-sm text-foreground">{{ $item->lokasi ?? 'Tidak ditentukan' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            @if($item->status === 'pending') bg-amber-100 text-amber-800
-                                            @elseif($item->status === 'approved') bg-accent/10 text-accent
-                                            @elseif($item->status === 'rejected') bg-destructive/10 text-destructive
-                                            @elseif($item->status === 'completed') bg-secondary/10 text-secondary
-                                            @else bg-muted text-foreground @endif">
-                                            {{ ucfirst($item->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        @if($item->status === 'active')
-                                        <form method="POST" action="{{ route('mahasiswa.pengajuan.store') }}">
-                                            @csrf
-                                            <input type="hidden" name="jadwal_id" value="{{ $item->id }}">
-                                            <input type="text" name="topik" placeholder="Topik" required class="block w-full mb-2 text-sm border-border rounded-md shadow-sm focus:border-primary focus:ring-primary">
-                                            <textarea name="deskripsi" placeholder="Deskripsi" required rows="2" class="block w-full mb-2 text-sm border-border rounded-md shadow-sm focus:border-primary focus:ring-primary"></textarea>
-                                            <x-primary-button class="text-sm">Ajukan Konsultasi</x-primary-button>
-                                        </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                            <div class="min-w-0">
+                                <p class="text-sm font-semibold text-foreground">{{ $item->tanggal->translatedFormat('l, d F Y') }}</p>
+                                <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <x-icon name="clock" class="h-4 w-4" />
+                                        {{ $item->jam_mulai }}–{{ $item->jam_selesai }}
+                                    </span>
+                                    @if ($item->lokasi)
+                                        <span class="text-border">•</span>
+                                        <span>{{ $item->lokasi }}</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-2 sm:justify-end">
+                            @if ($item->terisi_count > 0)
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-border">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                    Slot sudah terisi
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success ring-1 ring-inset ring-success/25">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                    Tersedia
+                                </span>
+                                <x-button :href="route('mahasiswa.pengajuan.create', ['jadwal' => $item->id])" size="sm">
+                                    Ajukan
+                                    <x-icon name="arrow-right" class="h-4 w-4" />
+                                </x-button>
+                            @endif
+                        </div>
                     </div>
-                    @else
-                    <div class="text-center py-8 text-muted-foreground">Tidak ada jadwal konsultasi aktif.</div>
-                    @endif
                 </div>
-            </div>
+            @endforeach
         </div>
-    </div>
+    @endif
 </x-app-layout>

@@ -1,21 +1,39 @@
 {
+  "id": "/",
   "name": "Konsultasi Akademik Mahasiswa",
   "short_name": "Konsultasi",
-  "description": "Sistem konsultasi akademik mahasiswa dan dosen wali",
-  "start_url": "/",
+  "description": "Sistem informasi layanan konsultasi akademik mahasiswa dan dosen wali.",
+  "lang": "id",
+  "dir": "ltr",
+  "start_url": "/dashboard",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#F8FAFC",
-  "theme_color": "#2563EB",
+  "background_color": "#F7F9F8",
+  "theme_color": "#176B52",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

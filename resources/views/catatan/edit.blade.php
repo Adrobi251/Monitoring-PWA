@@ -1,71 +1,67 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-serif font-semibold text-2xl text-foreground leading-tight">
-            {{ __('Edit Catatan Konsultasi') }}
-        </h2>
-    </x-slot>
+    <x-page-header
+        title="Edit Catatan Konsultasi"
+        subtitle="Perbarui catatan hasil konsultasi mahasiswa."
+    >
+        <x-slot:breadcrumb>
+            <x-breadcrumb :items="[['label' => 'Pengajuan Konsultasi', 'url' => route('dosen.riwayat')], ['label' => 'Detail Pengajuan', 'url' => route('dosen.riwayat.show', $catatan->pengajuan)], ['label' => 'Edit Catatan']]" />
+        </x-slot:breadcrumb>
+    </x-page-header>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-card overflow-hidden shadow-xl sm:rounded-2xl">
-                <div class="p-6 bg-card border-b border-border">
-                    <div class="mb-6">
-                        <h3 class="font-semibold text-foreground mb-2">Detail Pengajuan</h3>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <span class="text-muted-foreground">Mahasiswa:</span>
-                                <span class="font-medium">{{ $catatan->pengajuan->mahasiswa->name }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">NIM:</span>
-                                <span class="font-medium">{{ $catatan->pengajuan->mahasiswa->nim }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">Topik:</span>
-                                <span class="font-medium">{{ $catatan->pengajuan->topik }}</span>
-                            </div>
-                            <div>
-                                <span class="text-muted-foreground">Tanggal:</span>
-                                <span class="font-medium">{{ $catatan->pengajuan->jadwal->tanggal->format('d M Y') }}</span>
-                            </div>
-                        </div>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+            <x-card>
+                <form method="POST" action="{{ route('dosen.pengajuan.catatan.update', [$catatan->pengajuan, $catatan]) }}" class="space-y-5">
+                    @csrf
+                    @method('PUT')
+
+                    <x-form-field label="Ringkasan" name="ringkasan" hint="Ringkasan singkat hasil konsultasi.">
+                        <x-textarea name="ringkasan" rows="3" placeholder="Tuliskan ringkasan konsultasi" required maxlength="255">{{ old('ringkasan', $catatan->ringkasan) }}</x-textarea>
+                    </x-form-field>
+
+                    <x-form-field label="Arahan" name="arahan" hint="Arahan atau saran yang diberikan kepada mahasiswa.">
+                        <x-textarea name="arahan" rows="3" placeholder="Tuliskan arahan konsultasi" required maxlength="255">{{ old('arahan', $catatan->arahan) }}</x-textarea>
+                    </x-form-field>
+
+                    <x-form-field label="Tindak Lanjut" name="tindak_lanjut" hint="Opsional. Langkah berikutnya yang perlu dilakukan.">
+                        <x-textarea name="tindak_lanjut" rows="3" placeholder="Tuliskan tindak lanjut" maxlength="255">{{ old('tindak_lanjut', $catatan->tindak_lanjut) }}</x-textarea>
+                    </x-form-field>
+
+                    <div class="flex flex-col-reverse gap-2 border-t border-border pt-5 sm:flex-row sm:justify-end">
+                        <x-button :href="route('dosen.riwayat.show', $catatan->pengajuan)" variant="secondary">Batal</x-button>
+                        <x-button type="submit">
+                            <x-icon name="check" class="h-4 w-4" />
+                            Simpan Perubahan
+                        </x-button>
                     </div>
+                </form>
+            </x-card>
+        </div>
 
-                    <form method="POST" action="{{ route('pengajuan.catatan.update', [$catatan->pengajuan, $catatan]) }}">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="mb-4">
-                            <label for="ringkasan" class="block text-sm font-medium text-foreground">Ringkasan</label>
-                            <textarea name="ringkasan" id="ringkasan" rows="3" class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring-primary">{{ old('ringkasan', $catatan->ringkasan) }}</textarea>
-                            @error('ringkasan')
-                                <p class="mt-1 text-sm text-destructive">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="arahan" class="block text-sm font-medium text-foreground">Arahan</label>
-                            <textarea name="arahan" id="arahan" rows="3" class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring-primary">{{ old('arahan', $catatan->arahan) }}</textarea>
-                            @error('arahan')
-                                <p class="mt-1 text-sm text-destructive">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="tindak_lanjut" class="block text-sm font-medium text-foreground">Tindak Lanjut</label>
-                            <textarea name="tindak_lanjut" id="tindak_lanjut" rows="3" class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring-primary">{{ old('tindak_lanjut', $catatan->tindak_lanjut) }}</textarea>
-                            @error('tindak_lanjut')
-                                <p class="mt-1 text-sm text-destructive">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('dosen.riwayat.show', $catatan->pengajuan) }}" class="mr-4 text-sm text-muted-foreground hover:text-foreground">Batal</a>
-                            <x-primary-button>{{ __('Perbarui Catatan') }}</x-primary-button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div>
+            <x-card>
+                <h2 class="text-sm font-semibold text-foreground">Ringkasan Pengajuan</h2>
+                <dl class="mt-4 space-y-3 text-sm">
+                    <div>
+                        <dt class="text-xs text-muted-foreground">Mahasiswa</dt>
+                        <dd class="font-medium text-foreground">{{ $catatan->pengajuan->mahasiswa->name ?? '-' }}</dd>
+                        <dd class="text-xs text-muted-foreground">NIM {{ $catatan->pengajuan->mahasiswa->nim ?? '-' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs text-muted-foreground">Topik</dt>
+                        <dd class="font-medium text-foreground">{{ $catatan->pengajuan->topik }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs text-muted-foreground">Jadwal</dt>
+                        <dd class="font-medium text-foreground">
+                            {{ $catatan->pengajuan->jadwal?->tanggal?->translatedFormat('d M Y') ?? '-' }}
+                            @if ($catatan->pengajuan->jadwal)
+                                &middot; {{ $catatan->pengajuan->jadwal->jam_mulai }}–{{ $catatan->pengajuan->jadwal->jam_selesai }}
+                            @endif
+                        </dd>
+                    </div>
+                </dl>
+            </x-card>
         </div>
     </div>
 </x-app-layout>

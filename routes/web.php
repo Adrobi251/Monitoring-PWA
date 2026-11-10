@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\MahasiswaDashboardController;
+use App\Http\Controllers\CatatanKonsultasiController;
 use App\Http\Controllers\DosenDashboardController;
 use App\Http\Controllers\JadwalKonsultasiController;
+use App\Http\Controllers\MahasiswaDashboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PengajuanKonsultasiController;
-use App\Http\Controllers\CatatanKonsultasiController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,6 +19,7 @@ Route::get('/dashboard', function () {
     if ($user && $user->role === 'dosen') {
         return redirect()->route('dosen.dashboard');
     }
+
     return redirect()->route('mahasiswa.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -25,15 +27,20 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['auth', 'verified', 
     Route::get('/dashboard', [MahasiswaDashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/jadwal', [MahasiswaDashboardController::class, 'jadwal'])->name('jadwal');
     Route::get('/dashboard/riwayat', [MahasiswaDashboardController::class, 'riwayat'])->name('riwayat');
+    Route::get('/dosen-wali', [MahasiswaDashboardController::class, 'dosenWali'])->name('dosen-wali');
+    Route::get('/pengajuan/create', [PengajuanKonsultasiController::class, 'create'])->name('pengajuan.create');
     Route::post('/pengajuan', [PengajuanKonsultasiController::class, 'store'])->name('pengajuan.store');
+    Route::get('/pengajuan/{pengajuan}', [PengajuanKonsultasiController::class, 'show'])->name('pengajuan.show');
     Route::get('/pengajuan/{pengajuan}/catatan', [CatatanKonsultasiController::class, 'show'])->name('pengajuan.catatan.show');
 });
 
 Route::prefix('dosen')->name('dosen.')->middleware(['auth', 'verified', 'role:dosen'])->group(function () {
     Route::get('/dashboard', [DosenDashboardController::class, 'index'])->name('dashboard');
-    Route::post('/mahasiswa/assign', [DosenDashboardController::class, 'assignMahasiswa'])->middleware('throttle:5,1')->name('mahasiswa.assign');
     Route::get('/dashboard/jadwal', [DosenDashboardController::class, 'jadwal'])->name('jadwal');
     Route::get('/dashboard/riwayat', [DosenDashboardController::class, 'riwayat'])->name('riwayat');
+    Route::post('/mahasiswa/assign', [DosenDashboardController::class, 'assignMahasiswa'])->middleware('throttle:5,1')->name('mahasiswa.assign');
+    Route::get('/mahasiswa', [DosenDashboardController::class, 'mahasiswa'])->name('mahasiswa.index');
+    Route::get('/mahasiswa/{mahasiswa}', [DosenDashboardController::class, 'mahasiswaShow'])->name('mahasiswa.show');
     Route::get('/jadwal/create', [JadwalKonsultasiController::class, 'create'])->name('jadwal.create');
     Route::post('/jadwal', [JadwalKonsultasiController::class, 'store'])->name('jadwal.store');
     Route::get('/jadwal/{jadwal}/edit', [JadwalKonsultasiController::class, 'edit'])->name('jadwal.edit');
@@ -48,6 +55,9 @@ Route::prefix('dosen')->name('dosen.')->middleware(['auth', 'verified', 'role:do
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
