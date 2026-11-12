@@ -37,7 +37,7 @@
 
                 <form method="POST" action="{{ route('notifications.read', $notification->id) }}">
                     @csrf
-                    <button type="submit" class="flex w-full items-start gap-3 rounded-xl border border-border bg-surface px-4 py-4 text-left shadow-card transition-colors hover:bg-muted sm:items-center sm:px-5">
+                    <button type="submit" class="glass-lite flex w-full items-start gap-3 rounded-xl px-4 py-4 text-left transition-colors hover:bg-muted sm:items-center sm:px-5">
                         <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full {{ $notification->read_at ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary' }}">
                             <x-icon name="bell" class="h-5 w-5" />
                         </span>

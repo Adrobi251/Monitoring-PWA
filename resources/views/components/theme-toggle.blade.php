@@ -5,7 +5,7 @@
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     "
-    {{ $attributes->merge(['class' => 'inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-ring']) }}
+    {{ $attributes->merge(['class' => 'inline-flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-ring']) }}
     aria-label="Ganti mode terang atau gelap"
     title="Ganti tema"
 >

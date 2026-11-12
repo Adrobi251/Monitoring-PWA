@@ -1,4 +1,4 @@
-<header class="sticky top-0 z-30 border-b border-border bg-surface/90 backdrop-blur">
+<header class="glass sticky top-0 z-30 border-x-0 border-t-0 border-b border-border">
     <div class="flex h-16 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <div class="flex min-w-0 items-center gap-2">
             <button

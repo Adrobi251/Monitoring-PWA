@@ -1,6 +1,6 @@
 @props(['padding' => true])
 
-<div {{ $attributes->merge(['class' => 'overflow-hidden rounded-xl border border-border bg-surface shadow-card']) }}>
+<div {{ $attributes->merge(['class' => 'glass overflow-hidden rounded-xl']) }}>
     @isset($toolbar)
         <div class="border-b border-border px-4 py-3 sm:px-5">{{ $toolbar }}</div>
     @endisset

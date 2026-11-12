@@ -8,7 +8,7 @@
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <meta name="apple-mobile-web-app-title" content="Konsultasi">
-        <meta name="theme-color" content="#176B52">
+        <meta name="theme-color" content="#0F172A">
         <meta name="mobile-web-app-capable" content="yes">
 
         <title>{{ isset($title) ? $title.' · ' : '' }}{{ config('app.name', 'Konsultasi Akademik') }}</title>
@@ -43,7 +43,7 @@
                     x-transition:leave-start="translate-x-0"
                     x-transition:leave-end="-translate-x-full"
                     x-on:click="if ($event.target.closest('a')) sidebarOpen = false"
-                    class="fixed inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-border bg-surface shadow-pop"
+                    class="glass fixed inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-y-0 border-l-0 border-r border-border shadow-pop"
                 >
                     <div class="flex justify-end px-3 pt-3">
                         <button type="button" x-on:click="sidebarOpen = false" class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-ring" aria-label="Tutup menu">

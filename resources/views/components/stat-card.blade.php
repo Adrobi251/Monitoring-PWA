@@ -15,7 +15,7 @@
     ];
 @endphp
 
-<div {{ $attributes->merge(['class' => 'rounded-xl border border-border bg-surface p-5 shadow-card']) }}>
+<div {{ $attributes->merge(['class' => 'glass rounded-xl p-5']) }}>
     <div class="flex items-start justify-between gap-3">
         <div class="min-w-0">
             <p class="text-sm font-medium text-muted-foreground">{{ $label }}</p>

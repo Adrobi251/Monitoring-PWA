@@ -19,7 +19,7 @@
     x-show="show"
     x-transition
     x-init="setTimeout(() => show = false, 4500)"
-    {{ $attributes->merge(['class' => 'flex items-start gap-3 rounded-lg border px-4 py-3 text-sm shadow-card '.$classes]) }}
+    {{ $attributes->merge(['class' => 'flex items-start gap-3 rounded-lg border bg-surface/90 px-4 py-3 text-sm shadow-card backdrop-blur-md '.$classes]) }}
     role="status"
 >
     <x-icon :name="$icon" class="mt-0.5 h-4 w-4 shrink-0" />

@@ -27,7 +27,7 @@
     @else
         <div class="space-y-3">
             @foreach ($jadwal as $item)
-                <div class="rounded-xl border border-border bg-surface p-4 shadow-card sm:p-5">
+                <div class="glass-lite rounded-xl p-4 sm:p-5">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div class="flex items-start gap-4">
                             <div class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">

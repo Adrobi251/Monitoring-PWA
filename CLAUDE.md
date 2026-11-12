@@ -1,4 +1,6 @@
 <laravel-boost-guidelines>
+Read `CONSTRAINTS.md` before writing code. Do not weaken it to make a change pass.
+
 # Laravel Application
 
 This repository contains a Laravel application. Complete the following setup before working on the user's request.

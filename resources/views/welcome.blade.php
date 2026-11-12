@@ -8,7 +8,7 @@
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <meta name="apple-mobile-web-app-title" content="Konsultasi">
-        <meta name="theme-color" content="#176B52">
+        <meta name="theme-color" content="#0F172A">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="description" content="Sistem Informasi Layanan Konsultasi Akademik Mahasiswa berbasis PWA.">
 
@@ -29,17 +29,24 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="min-h-screen bg-background font-sans text-foreground antialiased">
-        <header class="sticky top-0 z-30 border-b border-border bg-surface/90 backdrop-blur">
+        <a
+            href="#konten"
+            class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-foreground focus:ring-2 focus:ring-ring"
+        >
+            Lewati ke konten
+        </a>
+
+        <header class="glass sticky top-0 z-30 border-x-0 border-t-0 border-b border-border">
             <div class="page-container flex h-16 items-center justify-between gap-4">
-                <a href="{{ url('/') }}" class="flex items-center gap-2.5">
+                <a href="{{ url('/') }}" class="flex items-center gap-2.5 rounded-lg focus-ring">
                     <x-brand-mark class="h-9 w-9 text-primary" />
                     <span class="text-sm font-semibold text-foreground">Konsultasi Akademik</span>
                 </a>
 
                 <nav class="hidden items-center gap-6 text-sm text-muted-foreground sm:flex" aria-label="Navigasi halaman">
-                    <a href="#fitur" class="transition-colors hover:text-foreground">Fitur</a>
-                    <a href="#alur" class="transition-colors hover:text-foreground">Alur</a>
-                    <a href="#tentang" class="transition-colors hover:text-foreground">Tentang</a>
+                    <a href="#fitur" class="rounded-sm transition-colors hover:text-foreground focus-ring">Fitur</a>
+                    <a href="#alur" class="rounded-sm transition-colors hover:text-foreground focus-ring">Alur</a>
+                    <a href="#tentang" class="rounded-sm transition-colors hover:text-foreground focus-ring">Tentang</a>
                 </nav>
 
                 <div class="flex items-center gap-1.5">
@@ -54,16 +61,11 @@
             </div>
         </header>
 
-        <main>
+        <main id="konten">
             <section class="border-b border-border">
                 <div class="page-container grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-2">
                     <div>
-                        <span class="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                            <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
-                            Progressive Web App
-                        </span>
-
-                        <h1 class="mt-5 text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                        <h1 class="text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
                             Konsultasi akademik dengan dosen wali, lebih teratur dan terpantau.
                         </h1>
 
@@ -86,7 +88,7 @@
                             @endauth
                         </div>
 
-                        <dl class="mt-10 grid grid-cols-3 gap-4 border-t border-border pt-6">
+                        <dl class="mt-10 grid grid-cols-1 gap-4 border-t border-border pt-6 sm:grid-cols-3">
                             <div>
                                 <dt class="text-xs text-muted-foreground">Peran pengguna</dt>
                                 <dd class="mt-1 text-lg font-semibold text-foreground">Mahasiswa &amp; Dosen</dd>
@@ -103,7 +105,7 @@
                     </div>
 
                     <div class="relative">
-                        <div class="rounded-2xl border border-border bg-surface p-4 shadow-card sm:p-5">
+                        <div class="glass rounded-2xl p-4 sm:p-5">
                             <div class="flex items-center justify-between border-b border-border pb-3">
                                 <p class="text-sm font-semibold text-foreground">Ringkasan Konsultasi</p>
                                 <span class="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">Akademik</span>
@@ -125,21 +127,21 @@
                                     <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary"><x-icon name="calendar" class="h-4 w-4" /></span>
                                     <div class="min-w-0 flex-1">
                                         <p class="text-xs font-medium text-foreground">Jadwal konsultasi</p>
-                                        <p class="text-[11px] text-muted-foreground">Dosen wali membuka slot waktu</p>
+                                        <p class="text-xs text-muted-foreground">Dosen wali membuka slot waktu</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-3 rounded-lg border border-border px-3 py-3">
                                     <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-warning/10 text-warning"><x-icon name="clock" class="h-4 w-4" /></span>
                                     <div class="min-w-0 flex-1">
                                         <p class="text-xs font-medium text-foreground">Menunggu persetujuan</p>
-                                        <p class="text-[11px] text-muted-foreground">Pengajuan ditinjau dosen wali</p>
+                                        <p class="text-xs text-muted-foreground">Pengajuan ditinjau dosen wali</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-3 rounded-lg border border-border px-3 py-3">
                                     <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10 text-success"><x-icon name="check-circle" class="h-4 w-4" /></span>
                                     <div class="min-w-0 flex-1">
                                         <p class="text-xs font-medium text-foreground">Catatan konsultasi</p>
-                                        <p class="text-[11px] text-muted-foreground">Hasil bimbingan tersimpan</p>
+                                        <p class="text-xs text-muted-foreground">Hasil bimbingan tersimpan</p>
                                     </div>
                                 </div>
                             </div>
@@ -151,8 +153,7 @@
             <section id="fitur" class="border-b border-border py-16">
                 <div class="page-container">
                     <div class="max-w-2xl">
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Fitur Utama</p>
-                        <h2 class="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Dirancang untuk alur konsultasi akademik.</h2>
+                        <h2 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Dirancang untuk alur konsultasi akademik.</h2>
                         <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Setiap fitur mengikuti kebutuhan mahasiswa dan dosen wali, dari pengajuan hingga catatan hasil konsultasi.</p>
                     </div>
 
@@ -179,23 +180,22 @@
             <section id="alur" class="border-b border-border py-16">
                 <div class="page-container">
                     <div class="max-w-2xl">
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Alur Penggunaan</p>
-                        <h2 class="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Tiga langkah sederhana.</h2>
+                        <h2 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Tiga langkah sederhana.</h2>
                     </div>
 
                     <ol class="mt-8 grid gap-4 sm:grid-cols-3">
-                        <li class="rounded-xl border border-border bg-surface p-5 shadow-card">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">1</span>
+                        <li class="glass-lite rounded-xl p-5">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">1</span>
                             <h3 class="mt-4 text-sm font-semibold text-foreground">Pilih jadwal</h3>
                             <p class="mt-1 text-sm text-muted-foreground">Lihat slot konsultasi yang dibuka dosen wali.</p>
                         </li>
-                        <li class="rounded-xl border border-border bg-surface p-5 shadow-card">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">2</span>
+                        <li class="glass-lite rounded-xl p-5">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">2</span>
                             <h3 class="mt-4 text-sm font-semibold text-foreground">Kirim pengajuan</h3>
                             <p class="mt-1 text-sm text-muted-foreground">Isi topik dan deskripsi konsultasi yang dibutuhkan.</p>
                         </li>
-                        <li class="rounded-xl border border-border bg-surface p-5 shadow-card">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">3</span>
+                        <li class="glass-lite rounded-xl p-5">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">3</span>
                             <h3 class="mt-4 text-sm font-semibold text-foreground">Pantau hasil</h3>
                             <p class="mt-1 text-sm text-muted-foreground">Ikuti status dan baca catatan hasil konsultasi.</p>
                         </li>
@@ -205,11 +205,11 @@
 
             <section id="tentang" class="py-16">
                 <div class="page-container">
-                    <div class="rounded-2xl bg-primary px-6 py-10 text-white sm:px-10">
+                    <div class="rounded-2xl bg-brand px-6 py-10 text-brand-foreground sm:px-10">
                         <div class="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
                             <div class="max-w-xl">
                                 <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Mulai konsultasi akademik Anda.</h2>
-                                <p class="mt-2 text-sm leading-relaxed text-white/80">Masuk menggunakan akun yang telah terdaftar untuk mengakses jadwal dan pengajuan konsultasi.</p>
+                                <p class="mt-2 text-sm leading-relaxed text-brand-foreground/80">Masuk menggunakan akun yang telah terdaftar untuk mengakses jadwal dan pengajuan konsultasi.</p>
                             </div>
                             <div class="flex flex-col gap-2 sm:flex-row">
                                 @auth

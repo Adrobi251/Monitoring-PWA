@@ -13,7 +13,7 @@
     >
         <x-icon name="bell" class="h-5 w-5" />
         @if ($unreadCount > 0)
-            <span class="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold text-white">
+            <span class="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold text-danger-foreground">
                 {{ $unreadCount > 9 ? '9+' : $unreadCount }}
             </span>
         @endif
@@ -28,7 +28,7 @@
         x-transition:leave="transition ease-in duration-100"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-1"
-        class="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border border-border bg-surface shadow-pop"
+        class="glass absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl shadow-pop"
     >
         <div class="flex items-center justify-between border-b border-border px-4 py-3">
             <p class="text-sm font-semibold text-foreground">Notifikasi</p>

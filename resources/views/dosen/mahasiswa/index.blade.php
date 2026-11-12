@@ -34,7 +34,7 @@
             @else
                 <div class="space-y-3 md:hidden">
                     @foreach ($mahasiswa as $item)
-                        <a href="{{ route('dosen.mahasiswa.show', $item) }}" class="block rounded-xl border border-border bg-surface p-4 shadow-card">
+                        <a href="{{ route('dosen.mahasiswa.show', $item) }}" class="glass-lite block rounded-xl p-4">
                             <div class="flex items-center gap-3">
                                 <x-avatar :name="$item->name" size="md" />
                                 <div class="min-w-0 flex-1">

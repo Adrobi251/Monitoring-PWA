@@ -51,7 +51,7 @@
     @else
         <div class="space-y-3 md:hidden">
             @foreach ($riwayat as $item)
-                <div class="rounded-xl border border-border bg-surface p-4 shadow-card">
+                <div class="glass-lite rounded-xl p-4">
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
                             <p class="text-sm font-semibold text-foreground">{{ $item->mahasiswa->name ?? '-' }}</p>

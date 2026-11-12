@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: pcov
+          extensions: mbstring, pdo_sqlite
+          ini-values: pcov.enabled=1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: npm ci
+      - run: cp .env.example .env && php artisan key:generate
+
+      # Aset harus dibangun dulu: UiSmokeTest merender Blade yang butuh manifest Vite.
+      - run: npm run build
+
+      # Sama dengan `composer check:task`, dipecah agar log per-dimensi terbaca.
+      - run: composer audit --locked
+      - run: npm audit --audit-level=high
+      - run: php -d pcov.enabled=1 artisan test --coverage --min=90.0

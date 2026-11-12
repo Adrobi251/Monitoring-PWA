@@ -32,6 +32,6 @@
 
     <p class="mt-6 text-center text-sm text-muted-foreground">
         Sudah punya akun?
-        <a href="{{ route('login') }}" class="font-medium text-primary hover:text-primary-dark">Masuk</a>
+        <a href="{{ route('login') }}" class="rounded-sm font-medium text-primary hover:text-primary-dark focus-ring">Masuk</a>
     </p>
 </x-guest-layout>

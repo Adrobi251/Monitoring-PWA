@@ -28,7 +28,7 @@
         x-transition:leave="transition ease-in duration-100"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-1"
-        class="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border border-border bg-surface shadow-pop"
+        class="glass absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl shadow-pop"
     >
         <div class="border-b border-border px-4 py-3">
             <p class="truncate text-sm font-semibold text-foreground">{{ $user->name }}</p>

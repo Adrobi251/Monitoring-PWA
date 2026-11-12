@@ -1,6 +1,6 @@
 @props(['padding' => 'p-5 sm:p-6'])
 
-<div {{ $attributes->merge(['class' => 'rounded-xl border border-border bg-surface shadow-card']) }}>
+<div {{ $attributes->merge(['class' => 'glass rounded-xl']) }}>
     @isset($header)
         <div class="border-b border-border px-5 py-4 sm:px-6">
             {{ $header }}

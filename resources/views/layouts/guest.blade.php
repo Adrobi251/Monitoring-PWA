@@ -8,7 +8,7 @@
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <meta name="apple-mobile-web-app-title" content="Konsultasi">
-        <meta name="theme-color" content="#176B52">
+        <meta name="theme-color" content="#0F172A">
         <meta name="mobile-web-app-capable" content="yes">
 
         <title>{{ isset($title) ? $title.' · ' : '' }}{{ config('app.name', 'Konsultasi Akademik') }}</title>
@@ -29,24 +29,23 @@
     </head>
     <body class="min-h-screen bg-background font-sans text-foreground antialiased">
         <div class="grid min-h-screen lg:grid-cols-2">
-            <aside class="relative hidden flex-col justify-between overflow-hidden bg-primary p-10 text-white lg:flex xl:p-14">
+            <aside class="relative hidden flex-col justify-between overflow-hidden bg-brand p-10 text-brand-foreground lg:flex xl:p-14">
                 <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/5"></div>
                 <div class="pointer-events-none absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-white/5"></div>
 
-                <a href="{{ url('/') }}" class="relative flex items-center gap-3">
-                    <x-brand-mark class="h-11 w-11 text-white" />
+                <a href="{{ url('/') }}" class="relative flex items-center gap-3 rounded-lg focus-ring">
+                    <x-brand-mark class="h-11 w-11 text-brand-foreground" />
                     <span>
                         <span class="block text-sm font-semibold leading-tight">Konsultasi Akademik</span>
-                        <span class="block text-xs text-white/70">Universitas Cokroaminoto Palopo</span>
+                        <span class="block text-xs text-brand-foreground/70">Universitas Cokroaminoto Palopo</span>
                     </span>
                 </a>
 
                 <div class="relative max-w-md">
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Layanan Akademik</p>
-                    <h1 class="mt-4 text-3xl font-semibold leading-tight xl:text-4xl">Konsultasi dengan dosen wali, lebih teratur dan terpantau.</h1>
-                    <p class="mt-4 text-sm leading-relaxed text-white/80">Ajukan jadwal konsultasi, pantau status persetujuan, dan simpan catatan hasil bimbingan dalam satu tempat.</p>
+                    <h1 class="text-3xl font-semibold leading-tight xl:text-4xl">Konsultasi dengan dosen wali, lebih teratur dan terpantau.</h1>
+                    <p class="mt-4 text-sm leading-relaxed text-brand-foreground/80">Ajukan jadwal konsultasi, pantau status persetujuan, dan simpan catatan hasil bimbingan dalam satu tempat.</p>
 
-                    <ul class="mt-8 space-y-3 text-sm text-white/90">
+                    <ul class="mt-8 space-y-3 text-sm text-brand-foreground/90">
                         <li class="flex items-center gap-3">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white/15"><x-icon name="check" class="h-3.5 w-3.5" /></span>
                             Jadwal konsultasi dosen wali
@@ -62,7 +61,7 @@
                     </ul>
                 </div>
 
-                <p class="relative text-xs text-white/60">Sistem Informasi Layanan Konsultasi Akademik &middot; PWA</p>
+                <p class="relative text-xs text-brand-foreground/60">Sistem Informasi Layanan Konsultasi Akademik &middot; PWA</p>
             </aside>
 
             <main class="flex min-h-screen flex-col">
@@ -76,7 +75,7 @@
                 </div>
 
                 <div class="flex flex-1 items-center justify-center px-4 pb-12 sm:px-8">
-                    <div class="w-full max-w-md">
+                    <div class="glass w-full max-w-md rounded-2xl p-6 sm:p-8">
                         {{ $slot }}
                     </div>
                 </div>

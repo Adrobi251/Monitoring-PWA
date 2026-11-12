@@ -4,7 +4,7 @@
     'actionUrl' => null,
 ])
 
-<div {{ $attributes->merge(['class' => 'flex flex-col gap-4 rounded-xl border border-border bg-surface p-4 shadow-card sm:flex-row sm:items-center sm:justify-between']) }}>
+<div {{ $attributes->merge(['class' => 'glass-lite flex flex-col gap-4 rounded-xl p-4 sm:flex-row sm:items-center sm:justify-between']) }}>
     <div class="flex items-start gap-4">
         <div class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">
             <span class="text-lg font-semibold leading-none">{{ $jadwal->tanggal->format('d') }}</span>

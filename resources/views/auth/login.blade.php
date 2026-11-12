@@ -24,7 +24,7 @@
             </label>
 
             @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" class="text-sm font-medium text-primary hover:text-primary-dark">Lupa kata sandi?</a>
+                <a href="{{ route('password.request') }}" class="rounded-sm text-sm font-medium text-primary hover:text-primary-dark focus-ring">Lupa kata sandi?</a>
             @endif
         </div>
 
@@ -33,6 +33,6 @@
 
     <p class="mt-6 text-center text-sm text-muted-foreground">
         Belum punya akun?
-        <a href="{{ route('register') }}" class="font-medium text-primary hover:text-primary-dark">Daftar sebagai mahasiswa</a>
+        <a href="{{ route('register') }}" class="rounded-sm font-medium text-primary hover:text-primary-dark focus-ring">Daftar sebagai mahasiswa</a>
     </p>
 </x-guest-layout>

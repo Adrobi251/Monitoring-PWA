@@ -49,6 +49,19 @@
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
         ],
+        "check:fast": [
+            "gitleaks detect --redact --no-banner"
+        ],
+        "check:task": [
+            "@check:fast",
+            "composer audit --locked",
+            "npm audit --audit-level=high",
+            "@php -d pcov.enabled=1 artisan test --coverage --min=90.0"
+        ],
+        "check:full": [
+            "@check:task",
+            "npm run build"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
