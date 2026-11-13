@@ -41,6 +41,8 @@ flowchart TD
     H --> C
 ```
 
+[![Tampilan diagram arsitektur](docs/images/arsitektur-konsultasi-akademik.png)](.archify/architecture-konsultasi-akademik-20261113-161510/arsitektur-konsultasi-akademik.html)
+
 Diagram arsitektur lengkap (HTML interaktif):
 [arsitektur-konsultasi-akademik.html](.archify/architecture-konsultasi-akademik-20261113-161510/arsitektur-konsultasi-akademik.html).
 GitHub tidak merender HTML inline, jadi unduh lalu buka di browser.
