@@ -7,7 +7,7 @@
     <button
         type="button"
         x-on:click="open = ! open"
-        class="relative inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-ring"
+        class="press-glow relative inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-ring"
         aria-label="Notifikasi"
         :aria-expanded="open"
     >

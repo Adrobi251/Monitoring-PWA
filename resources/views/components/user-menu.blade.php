@@ -7,7 +7,7 @@
     <button
         type="button"
         x-on:click="open = ! open"
-        class="flex items-center gap-2 rounded-lg p-1 pr-2 text-left transition-colors hover:bg-muted focus-ring"
+        class="press-glow flex items-center gap-2 rounded-lg p-1 pr-2 text-left transition-colors hover:bg-muted focus-ring"
         :aria-expanded="open"
         aria-label="Menu pengguna"
     >

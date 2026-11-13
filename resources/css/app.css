@@ -64,6 +64,10 @@
         --liquid-edge-light: rgba(255, 255, 255, 1);
         --liquid-edge-dark: rgba(15, 23, 42, 0.55);
         --liquid-morph: 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+        /* Press glow — DESIGN.md 3.6 */
+        --press-glow: rgb(21 128 61 / 0.14);
+        --press-dissolve: 420ms;
     }
 
     .dark {
@@ -102,6 +106,9 @@
         --liquid-spec-2: rgb(248 250 252 / 0.22);
         --liquid-edge-light: rgba(248, 250, 252, 0.8);
         --liquid-edge-dark: rgba(0, 0, 0, 0.6);
+
+        /* Press glow — DESIGN.md 3.6 */
+        --press-glow: rgb(248 250 252 / 0.30);
     }
 
     html {
@@ -124,6 +131,19 @@
        Ini bagian yang tidak digambar tapi tetap terlihat. */
     :root {
         accent-color: rgb(var(--primary));
+        color-scheme: light;
+    }
+
+    .dark {
+        color-scheme: dark;
+    }
+
+    /* Plugin forms menulis background-color: #fff, jadi checkbox/radio gelap
+       tidak ikut tema. :not(:checked) agar state tercentang tetap memakai primary. */
+    .dark input[type='checkbox']:not(:checked),
+    .dark input[type='radio']:not(:checked) {
+        background-color: rgb(var(--surface));
+        border-color: rgb(var(--border));
     }
 
     body {
@@ -346,6 +366,39 @@
 
     .dark .glass-lite {
         background: rgb(var(--glass-tint) / 0.88);
+    }
+
+    /* Press glow — DESIGN.md 3.6. z-index -1 + isolation: glow di atas
+       background, di bawah teks; pseudo tanpa z-index akan mengaburkan teks. */
+    .press-glow {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+    .press-glow::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(
+            120px circle at var(--press-x, 50%) var(--press-y, 50%),
+            var(--press-glow),
+            transparent 65%
+        );
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--press-dissolve) ease-out;
+    }
+
+    .press-glow:active::before {
+        opacity: 1;
+        transition-duration: 0ms;
+    }
+
+    /* Tombol gelap: glow putih, karena tint signal tidak terbaca di atas primary. */
+    .press-glow:where(.bg-primary, .bg-brand, .bg-danger) {
+        --press-glow: rgb(255 255 255 / 0.32);
     }
 
     /* Tanpa blur, kaca transparan tidak terbaca — pakai surface solid. */

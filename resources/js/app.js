@@ -77,3 +77,58 @@ document.addEventListener('submit', (event) => {
         }
     }, { passive: true });
 })();
+
+// Press glow: bloom di titik tekan, lalu mengikuti drag (DESIGN.md 3.6).
+(function pressFeedback() {
+    let pressed = null;
+    let pending = null;
+    let frame = 0;
+
+    const flush = () => {
+        frame = 0;
+
+        if (!pressed || !pending) {
+            return;
+        }
+
+        const rect = pressed.getBoundingClientRect();
+        pressed.style.setProperty('--press-x', `${pending.clientX - rect.left}px`);
+        pressed.style.setProperty('--press-y', `${pending.clientY - rect.top}px`);
+        pending = null;
+    };
+
+    document.addEventListener('pointerdown', (event) => {
+        const target = event.target instanceof Element ? event.target.closest('.press-glow') : null;
+
+        if (!target) {
+            return;
+        }
+
+        // Langsung di set (bukan rAF) supaya tap cepat tetap mendapat titik yang benar.
+        const rect = target.getBoundingClientRect();
+        target.style.setProperty('--press-x', `${event.clientX - rect.left}px`);
+        target.style.setProperty('--press-y', `${event.clientY - rect.top}px`);
+        pressed = target;
+    }, { passive: true });
+
+    // Hanya perlu mengikuti jari saat gerak tidak dikurangi pengguna.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.addEventListener('pointermove', (event) => {
+            if (!pressed) {
+                return;
+            }
+
+            pending = event;
+
+            if (!frame) {
+                frame = requestAnimationFrame(flush);
+            }
+        }, { passive: true });
+    }
+
+    ['pointerup', 'pointercancel'].forEach((type) => {
+        document.addEventListener(type, () => {
+            pressed = null;
+        }, { passive: true });
+    });
+})();

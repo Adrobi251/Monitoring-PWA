@@ -28,53 +28,28 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="min-h-screen bg-background font-sans text-foreground antialiased">
-        <div x-data="{ sidebarOpen: false }" x-on:toggle-sidebar.window="sidebarOpen = true" x-on:keydown.escape.window="sidebarOpen = false" class="min-h-screen lg:pl-64">
-            <x-sidebar />
+        <div class="flex min-h-screen flex-col">
+            <x-topbar />
 
-            <div x-show="sidebarOpen" x-cloak class="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu navigasi">
-                <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 bg-foreground/40 backdrop-blur-sm" x-on:click="sidebarOpen = false"></div>
+            <main class="flex-1 py-6 pb-28 sm:py-8 lg:pb-8">
+                <div class="page-container">
+                    @isset($header)
+                        <div class="mb-6">{{ $header }}</div>
+                    @endisset
 
-                <div
-                    x-show="sidebarOpen"
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="-translate-x-full"
-                    x-transition:enter-end="translate-x-0"
-                    x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="translate-x-0"
-                    x-transition:leave-end="-translate-x-full"
-                    x-on:click="if ($event.target.closest('a')) sidebarOpen = false"
-                    class="glass fixed inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-y-0 border-l-0 border-r border-border shadow-pop"
-                >
-                    <div class="flex justify-end px-3 pt-3">
-                        <button type="button" x-on:click="sidebarOpen = false" class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-ring" aria-label="Tutup menu">
-                            <x-icon name="x" class="h-5 w-5" />
-                        </button>
-                    </div>
-                    <x-sidebar-nav />
+                    {{ $slot }}
                 </div>
-            </div>
+            </main>
 
-            <div class="flex min-h-screen flex-col">
-                <x-topbar />
-
-                <main class="flex-1 py-6 sm:py-8">
-                    <div class="page-container">
-                        @isset($header)
-                            <div class="mb-6">{{ $header }}</div>
-                        @endisset
-
-                        {{ $slot }}
-                    </div>
-                </main>
-
-                <footer class="border-t border-border py-4">
-                    <div class="page-container flex flex-col items-center justify-between gap-1 text-xs text-muted-foreground sm:flex-row">
-                        <p>&copy; {{ date('Y') }} Sistem Informasi Layanan Konsultasi Akademik</p>
-                        <p>Universitas Cokroaminoto Palopo</p>
-                    </div>
-                </footer>
-            </div>
+            <footer class="border-t border-border py-4 pb-28 lg:pb-4">
+                <div class="page-container flex flex-col items-center justify-between gap-1 text-xs text-muted-foreground sm:flex-row">
+                    <p>&copy; {{ date('Y') }} Sistem Informasi Layanan Konsultasi Akademik</p>
+                    <p>Universitas Cokroaminoto Palopo</p>
+                </div>
+            </footer>
         </div>
+
+        <x-bottom-nav />
 
         <div class="pointer-events-none fixed inset-x-4 top-20 z-50 flex flex-col items-end gap-2 sm:inset-x-auto sm:right-6 sm:max-w-sm">
             @if (session('success'))

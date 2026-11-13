@@ -5,7 +5,7 @@
     style="display: none"
     role="status"
     aria-live="polite"
-    {{ $attributes->merge(['class' => 'glass fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-md items-start gap-3 rounded-xl border-warning/40 px-4 py-3 shadow-pop sm:inset-x-auto sm:right-6 sm:mx-0']) }}
+    {{ $attributes->merge(['class' => 'glass fixed inset-x-4 bottom-24 z-[60] mx-auto max-w-md items-start gap-3 rounded-xl border-warning/40 px-4 py-3 shadow-pop sm:inset-x-auto sm:right-6 sm:mx-0 lg:bottom-4']) }}
 >
     <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-warning/10 text-warning">
         <x-icon name="wifi-off" class="h-4 w-4" />
