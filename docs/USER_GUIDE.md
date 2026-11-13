@@ -7,9 +7,6 @@
 | Dosen | `dosen@test.com` | `password` | NIDN `D001`, id 3 |
 | Mahasiswa | `mahasiswa@test.com` | `password` | NIM `123456789`, id 4, dosen wali id 3 |
 
-Akun bimbingan contoh (password `password`): `ahmad@test.com`, `siti@test.com`,
-`rizky@test.com`. Akun `belum@test.com` (Putri Amelia) sengaja tanpa dosen wali.
-
 ## Alur mahasiswa
 
 1. **Login** di `/login` dengan email dan password.

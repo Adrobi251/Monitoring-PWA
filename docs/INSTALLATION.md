@@ -54,14 +54,15 @@
    CREATE DATABASE konsultasi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
    ```
 
-4. **Migrasi dan seed data demo**
+4. **Migrasi dan akun awal**
 
    ```powershell
    php artisan migrate --seed
    ```
 
-   Perintah ini menjalankan `DatabaseSeeder` (akun demo) dan `DemoDataSeeder` (jadwal, pengajuan,
-   catatan contoh). Untuk data minimal, gunakan `php artisan migrate` tanpa `--seed`.
+   Perintah ini menjalankan `DatabaseSeeder` dan membuat dua akun awal: `dosen@test.com`
+   dan `mahasiswa@test.com` (password `password`). Untuk instalasi tanpa akun contoh,
+   gunakan `php artisan migrate` tanpa `--seed`, lalu tambahkan akun dosen secara manual.
 
 5. **Aset frontend**
 
