@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Arsitektur Konsultasi Akademik",
+    "output": ".archify/architecture-konsultasi-akademik-20261113-161510/arsitektur-konsultasi-akademik.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Adrobi251/Monitoring-PWA.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "890b0488099f84bac1cdedb5d988aa4b2b08edac"
+    },
+    "views": [
+      {
+        "id": "alur-mahasiswa",
+        "label": "Alur mahasiswa",
+        "focus": ["mahasiswa", "browser", "web", "controllers", "models", "mysql"],
+        "note": "Pemesanan slot sampai persetujuan dosen."
+      },
+      {
+        "id": "notifikasi",
+        "label": "Notifikasi asinkron",
+        "focus": ["controllers", "queue", "worker", "mysql"],
+        "note": "Job ShouldQueue menulis notifikasi ke tabel notifications."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "mahasiswa",
+      "type": "external",
+      "label": "Mahasiswa",
+      "sublabel": "role:mahasiswa",
+      "icon": "person",
+      "pos": [40, 260],
+      "size": [140, 60],
+      "sources": [
+        { "path": "routes/web.php", "line": 26, "end_line": 31 }
+      ]
+    },
+    {
+      "id": "dosen",
+      "type": "external",
+      "label": "Dosen",
+      "sublabel": "role:dosen",
+      "icon": "briefcase",
+      "pos": [40, 80],
+      "size": [140, 60],
+      "sources": [
+        { "path": "routes/web.php", "line": 37, "end_line": 41 }
+      ]
+    },
+    {
+      "id": "browser",
+      "type": "frontend",
+      "label": "Blade + PWA",
+      "sublabel": "browser",
+      "tag": "service worker + offline",
+      "pos": [270, 170],
+      "size": [160, 64],
+      "sources": [
+        { "path": "resources/views/layouts/app.blade.php", "line": 7, "end_line": 28 },
+        { "path": "resources/js/app.js", "line": 8, "end_line": 12 },
+        { "path": "public/service-worker.js", "line": 38, "end_line": 59 }
+      ]
+    },
+    {
+      "id": "web",
+      "type": "backend",
+      "label": "Routes & middleware",
+      "sublabel": "Laravel 12",
+      "tag": "auth · verified · role",
+      "pos": [520, 170],
+      "size": [160, 64],
+      "sources": [
+        { "path": "routes/web.php", "line": 26, "end_line": 37 },
+        { "path": "bootstrap/app.php", "line": 14, "end_line": 19 },
+        { "path": "app/Http/Middleware/RoleMiddleware.php", "line": 11, "end_line": 18 }
+      ]
+    },
+    {
+      "id": "controllers",
+      "type": "backend",
+      "label": "Controllers",
+      "sublabel": "Pengajuan · Catatan",
+      "tag": "transaksi + lock",
+      "pos": [770, 170],
+      "size": [160, 64],
+      "sources": [
+        { "path": "app/Http/Controllers/PengajuanKonsultasiController.php", "line": 57, "end_line": 86 },
+        { "path": "app/Http/Controllers/CatatanKonsultasiController.php", "line": 54, "end_line": 84 }
+      ]
+    },
+    {
+      "id": "models",
+      "type": "backend",
+      "label": "Eloquent models",
+      "sublabel": "User · Pengajuan",
+      "tag": "relasi + status",
+      "pos": [1020, 170],
+      "size": [160, 64],
+      "sources": [
+        { "path": "app/Models/User.php", "line": 33, "end_line": 56 },
+        { "path": "app/Models/PengajuanKonsultasi.php", "line": 24, "end_line": 42 }
+      ]
+    },
+    {
+      "id": "mysql",
+      "type": "database",
+      "label": "MySQL",
+      "sublabel": "konsultasi",
+      "tag": "foreign key cascade",
+      "pos": [1270, 170],
+      "size": [160, 64],
+      "sources": [
+        { "path": "database/migrations/2026_11_09_111454_create_pengajuan_konsultasi_table.php", "line": 14, "end_line": 24 },
+        { "path": "database/migrations/2026_11_09_111511_create_catatan_konsultasi_table.php", "line": 14, "end_line": 22 },
+        { "path": "database/migrations/2026_11_09_121529_create_notifications_table.php", "line": 14, "end_line": 21 }
+      ]
+    },
+    {
+      "id": "queue",
+      "type": "messagebus",
+      "label": "Queue",
+      "sublabel": "tabel jobs",
+      "tag": "driver database",
+      "pos": [770, 410],
+      "size": [160, 64],
+      "sources": [
+        { "path": "config/queue.php", "line": 16, "end_line": 45 },
+        { "path": "database/migrations/0001_01_01_000002_create_jobs_table.php", "line": 14, "end_line": 22 }
+      ]
+    },
+    {
+      "id": "worker",
+      "type": "backend",
+      "label": "Queue worker",
+      "sublabel": "php artisan queue:work",
+      "tag": "harus berjalan",
+      "pos": [1270, 410],
+      "size": [160, 64],
+      "sources": [
+        { "path": "app/Notifications/PengajuanStatusNotification.php", "line": 10, "end_line": 28 },
+        { "path": "config/queue.php", "line": 38, "end_line": 45 }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Aplikasi Laravel",
+      "wraps": ["web", "controllers", "models"],
+      "pad": 24
+    }
+  ],
+  "connections": [
+    { "from": "mahasiswa", "to": "browser", "label": "HTTPS", "variant": "emphasis" },
+    { "from": "dosen", "to": "browser", "label": "HTTPS" },
+    { "from": "browser", "to": "web", "label": "form POST", "variant": "emphasis" },
+    { "from": "web", "to": "controllers", "label": "dispatch" },
+    { "from": "controllers", "to": "models", "label": "Eloquent" },
+    { "from": "models", "to": "mysql", "label": "SQL" },
+    { "from": "controllers", "to": "queue", "label": "notify()", "variant": "dashed" },
+    { "from": "queue", "to": "worker", "label": "jobs" },
+    { "from": "worker", "to": "mysql", "label": "notifications", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Akses & peran",
+      "items": [
+        "Rute privat memakai auth + verified",
+        "Prefix mahasiswa dan dosen dijaga role middleware",
+        "SecurityHeaders dipasang global"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Alur konsultasi",
+      "items": [
+        "Pemesanan slot memakai transaksi dan lockForUpdate",
+        "Dosen menyetujui atau menolak pengajuan pending",
+        "Catatan hanya untuk pengajuan approved, lalu status completed"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "PWA & notifikasi",
+      "items": [
+        "Service worker hanya cache aset statis; HTML selalu dari jaringan",
+        "Notifikasi ShouldQueue masuk tabel jobs lebih dulu",
+        "Worker aktif diperlukan saat QUEUE_CONNECTION=database"
+      ]
+    }
+  ]
+}

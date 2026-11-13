@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "3ec80d5f-0834-47e4-8317-9eeed9775b00",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\laragon\\www\\konsultasi layanan\\.archify\\architecture-konsultasi-akademik-20261113-161510\\candidate.json",
+  "output": "C:\\laragon\\www\\konsultasi layanan\\.archify\\architecture-konsultasi-akademik-20261113-161510\\arsitektur-konsultasi-akademik.html",
+  "specification": {
+    "sha256": "87fb6408975ce018a1e26f88e17e5b3b0366846084c7e3ed6b449f5fa1c8e468",
+    "bytes": 6442
+  },
+  "artifact": {
+    "sha256": "fb64e3c440745ad9c43a857a5d1a64dfdf1d650a01dc339820e8dd709368a5a6",
+    "bytes": 851110
+  }
+}

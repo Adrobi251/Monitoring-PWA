@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\laragon\\www\\konsultasi layanan\\.archify\\architecture-konsultasi-akademik-20261113-161510\\candidate.json",
+    "sha256": "ff96201b3a13f3a6657453a09f75ccbe7120f3e2e35736d88a0749d1c0e81cb7",
+    "bytes": 6443
+  },
+  "artifact": {
+    "path": "C:\\laragon\\www\\konsultasi layanan\\.archify\\architecture-konsultasi-akademik-20261113-161510\\arsitektur-konsultasi-akademik.html",
+    "sha256": "4a762392f701d9473bae0710f0824bb2f85275aeb29e3d0f4f964e4ab128e8ab",
+    "bytes": 851113
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\laragon\\www\\konsultasi layanan\\.archify\\architecture-konsultasi-akademik-20261113-161510\\arsitektur-konsultasi-akademik.finalize.json",
+    "summaryReceipt": "C:\\laragon\\www\\konsultasi layanan\\.archify\\architecture-konsultasi-akademik-20261113-161510\\arsitektur-konsultasi-akademik.finalize-summary.json",
+    "browserCheckReceipt": "C:\\laragon\\www\\konsultasi layanan\\.archify\\architecture-konsultasi-akademik-20261113-161510\\arsitektur-konsultasi-akademik.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-11-13T08:15:37.658Z",
+    "source": "network",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 8243,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  },
+  "layoutReviewRecommendation": {
+    "action": "inspect-leading-space",
+    "evidence": {
+      "measured": true,
+      "emptyTopPx": 140,
+      "emptyTopRatio": 0.233,
+      "occupiedTop": 140,
+      "viewBoxTop": 0,
+      "canvasHeight": 602,
+      "typicalNodeHeight": 64,
+      "reviewSuggested": true
+    },
+    "reason": "Measured content, including routes and labels, leaves a large empty area above the diagram. This is a composition suggestion, not a failed gate.",
+    "repair": "Check whether that leading space is intentional. If not, reposition the connected scene nearer the canvas origin while retaining room for its actual boundaries, labels and return routes. Preserve all meaning and user-fixed geometry, then rerun finalize. No screenshot is required."
+  }
+}
